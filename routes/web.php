@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\PreferenceController;
 
 Route::get('auth/google', [GoogleController::class, 'redirect']);
 Route::get('auth/google/callback', [GoogleController::class, 'callback']);
@@ -33,6 +34,9 @@ Route::get(
     '/itinerary',
     [UserController::class, 'itinerary']
 )->name('itinerary');
+
+Route::post('/api/preferences', [PreferenceController::class, 'store']);
+Route::post('/api/preferences/clear', [PreferenceController::class, 'clear']);
 
 
 Route::get('/admin/login', [AuthenticatedSessionController::class, 'create'])

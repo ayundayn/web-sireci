@@ -56,9 +56,16 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h6 class="title-card">{{ $item->nama_tempat }}</h6>
 
-                                        <span class="rating">
-                                            <i class="bi bi-star-fill text-warning"></i> {{ $item->rating ?? '-' }}
-                                        </span>
+                                        <div class="d-flex align-items-center gap-1">
+                                            @if(isset($item->skor_rekomendasi) && $item->skor_rekomendasi > 0)
+                                                <span class="recommendation-badge" title="Skor Rekomendasi">
+                                                    <i class="bi bi-lightning-charge-fill text-warning"></i> {{ number_format($item->skor_rekomendasi * 100, 0) }}%
+                                                </span>
+                                            @endif
+                                            <span class="rating">
+                                                <i class="bi bi-star-fill text-warning"></i> {{ $item->rating ?? '-' }}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <small class="location">
@@ -120,9 +127,16 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h6 class="title-card">{{ $item->nama_tempat }}</h6>
 
-                                        <span class="rating">
-                                            <i class="bi bi-star-fill text-warning"></i> {{ $item->rating ?? '-' }}
-                                        </span>
+                                        <div class="d-flex align-items-center gap-1">
+                                            @if(isset($item->skor_rekomendasi) && $item->skor_rekomendasi > 0)
+                                                <span class="recommendation-badge" title="Skor Rekomendasi">
+                                                    <i class="bi bi-lightning-charge-fill text-warning"></i> {{ number_format($item->skor_rekomendasi * 100, 0) }}%
+                                                </span>
+                                            @endif
+                                            <span class="rating">
+                                                <i class="bi bi-star-fill text-warning"></i> {{ $item->rating ?? '-' }}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <small class="location">
@@ -260,7 +274,52 @@
 
         // Simpan
         function simpanPreferensi() {
-            closePopup();
+            const kategoriWisata = [];
+            const kategoriKuliner = [];
+            const budgetMin = document.querySelector('.budget-group input[placeholder="MIN"]').value;
+            const budgetMax = document.querySelector('.budget-group input[placeholder="MAX"]').value;
+            let ratingMin = null;
+
+            document.querySelectorAll('.chip.active').forEach(chip => {
+                const text = chip.textContent.trim();
+                if (['Wisata Alam', 'Wisata Edukasi', 'Wisata Budaya', 'Wisata Religi', 'Wisata Belanja'].includes(text)) {
+                    kategoriWisata.push(text);
+                } else if (['Tradisional', 'Inovatif', 'Budaya'].includes(text)) {
+                    kategoriKuliner.push(text);
+                }
+            });
+
+            document.querySelectorAll('.rating-group input[type="checkbox"]').forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    ratingMin = 5 - index;
+                }
+            });
+
+            fetch('/api/preferences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    kategori_wisata: kategoriWisata,
+                    kategori_kuliner: kategoriKuliner,
+                    budget_min: budgetMin ? parseInt(budgetMin) : null,
+                    budget_max: budgetMax ? parseInt(budgetMax) : null,
+                    rating_min: ratingMin
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closePopup();
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan preferensi');
+            });
         }
 
     </script>

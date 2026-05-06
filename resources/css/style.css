@@ -895,3 +895,24 @@ padding:20px;
 .btn-back:hover {
     text-decoration: none !important;
 }
+
+/* RECOMMENDATION BADGE */
+.recommendation-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.recommendation-badge .bi {
+    font-size: 10px;
+}
+
+.gap-1 {
+    gap: 4px;
+}
