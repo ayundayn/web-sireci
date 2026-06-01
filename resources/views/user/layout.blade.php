@@ -172,7 +172,7 @@
 
                     </div>
                 @else
-                    <button type="button" class="btn-login" onclick="showLoginModal()">
+                    <button type="button" class="btn-login" onclick="showLoginModal('login')">
                         Masuk
                     </button>
                 @endauth
@@ -231,7 +231,7 @@
             });
         }
 
-        function showLoginModal(type = 'favorit') {
+        function showLoginModal(type = 'login') {
 
             const title = document.getElementById('loginModalTitle');
 
@@ -243,12 +243,20 @@
             untuk memberikan penilaian.
         `;
 
-            } else {
+            } else if (type === 'favorit') {
 
                 title.innerHTML = `
             Mau disimpan?<br>
             Masuk untuk menambahkan<br>
             destinasi ke daftar favorit.
+        `;
+
+            } else {
+
+                title.innerHTML = `
+            Selamat Datang di SIRECI<br>
+            Masuk untuk mendapatkan<br>
+            pengalaman yang lebih personal.
         `;
             }
 

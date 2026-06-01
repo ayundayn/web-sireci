@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\KulinerController;
-use App\Http\Controllers\Admin\UatAdminController;
-use App\Http\Controllers\Admin\WisataController;
+use App\Http\Controllers\admin\UatAdminController;
+use App\Http\Controllers\admin\WisataController;
 use App\Http\Controllers\FavoritController;
 use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\admin\KategoriController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\SearchController;

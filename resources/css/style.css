@@ -459,7 +459,7 @@ body {
     position: fixed;
     top: 130px;
     right: 20px;
-    z-index: 999;
+    z-index: 10;
 }
 
 .sticky-preferensi .btn-main {
