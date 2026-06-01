@@ -57,7 +57,7 @@ class SearchController extends Controller
         }
 
         if ($request->filled('max_harga')) {
-            $kuliner->where('htm_min', '<=', $max);
+            $kuliner->where('htm_max', '<=', $max);
         }
 
         // Wisata

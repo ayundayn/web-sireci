@@ -11,7 +11,7 @@
                     ←
                 </a>
 
-                <h3 class="mb-0 fw-bold">Semua Wisata</h3>
+                <h3 class="mb-0 fw-bold">Semua Kuliner</h3>
 
             </div>
 
