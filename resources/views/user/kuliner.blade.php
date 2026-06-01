@@ -46,7 +46,8 @@
                                         <div class="d-flex justify-content-between align-items-center mt-2">
 
                                             <span class="price">
-                                                Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
+                                                Rp {{ number_format($item->htm_min ?? 0, 0, ',', '.') }}
+                                                - {{ number_format($item->htm_max ?? 0, 0, ',', '.') }}
                                             </span>
 
                                             <small class="category">

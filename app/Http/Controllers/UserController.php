@@ -72,7 +72,7 @@ class UserController extends Controller
                         'htm_min_domestik' => $item['htm_min_domestik'] ?? 0,
                         'htm_max_domestik' => $item['htm_max_domestik'] ?? 0,
                         'skor_rekomendasi' => $item['skor_rekomendasi'] ?? 0,
-                        'gambar' => Wisata::find($item['wisata_id'])
+                        'gambar_utama' => Wisata::find($item['wisata_id'])
                                 ?->gambar()
                             ->first()
                                 ?->gambar,
@@ -94,7 +94,7 @@ class UserController extends Controller
                     'htm_min_domestik' => $item['htm_min_domestik'] ?? 0,
                     'htm_max_domestik' => $item['htm_max_domestik'] ?? 0,
                     'skor_rekomendasi' => 0,
-                    'gambar' => Wisata::find($item['wisata_id'])
+                    'gambar_utama' => Wisata::find($item['wisata_id'])
                             ?->gambar()
                             ->first()
                             ?->gambar,
@@ -141,7 +141,7 @@ class UserController extends Controller
                         'htm_min' => $item['htm_min'] ?? 0,
                         'htm_max' => $item['htm_max'] ?? 0,
                         'skor_rekomendasi' => $item['skor_rekomendasi'] ?? 0,
-                        'gambar' => Kuliner::find($item['kuliner_id'])
+                        'gambar_utama' => Kuliner::find($item['kuliner_id'])
                                 ?->gambar()
                             ->first()
                                 ?->gambar,
@@ -162,7 +162,7 @@ class UserController extends Controller
                     'alamat' => $item['alamat'],
                     'harga' => $item['htm_min'],
                     'skor_rekomendasi' => 0,
-                    'gambar' => Kuliner::find($item['kuliner_id'])
+                    'gambar_utama' => Kuliner::find($item['kuliner_id'])
                             ?->gambar()
                             ->first()
                             ?->gambar,

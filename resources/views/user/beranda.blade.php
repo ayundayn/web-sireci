@@ -104,7 +104,9 @@
                     <a href="{{ route('detail.wisata', $item->wisata_id) }}" class="card-link">
                         <div class="card wisata-card">
 
-                            <img src="{{ asset('uploads/wisata/' . ($item->gambar ?? 'background.png')) }}" class="card-img">
+                            <img src="{{ $item->gambar_utama
+                                ? asset('uploads/wisata/' . $item->gambar_utama)
+                                : asset('asset/images/background.png') }}" class="card-img">
 
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -177,7 +179,9 @@
                     <a href="{{ route('detail.kuliner', $item->kuliner_id) }}" class="card-link">
                         <div class="card wisata-card">
 
-                            <img src="{{ asset('uploads/kuliner/' . ($item->gambar ?? 'background.png')) }}" class="card-img">
+                            <img src="{{ $item->gambar_utama
+                                ? asset('uploads/kuliner/' . $item->gambar_utama)
+                                : asset('asset/images/background.png') }}" class="card-img">
 
                             <div class="card-body">
 
