@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FavoritKuliner;
+use App\Models\FavoritWisata;
+use App\Models\KategoriKuliner;
+use App\Models\KategoriWisata;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Wisata;
 use App\Models\Kuliner;
@@ -20,18 +25,29 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $preferences = Session::get('user_preferences');
+        $hasPreference = Session::has('user_preferences');
+
         $userId = auth()->id() ?: $request->session()->getId();
 
         $wisata = $this->getWisataRecommendations($userId, $preferences);
         $kuliner = $this->getKulinerRecommendations($userId, $preferences);
 
-        return view('user.beranda', compact('wisata', 'kuliner'));
+        $kategoriWisata = KategoriWisata::all();
+        $kategoriKuliner = KategoriKuliner::all();
+
+        return view('user.beranda', compact(
+            'wisata',
+            'kuliner',
+            'kategoriWisata',
+            'kategoriKuliner',
+            'hasPreference'
+        ));
     }
 
     protected function getWisataRecommendations($userId, $preferences)
     {
         if ($preferences && !empty($preferences['kategori_wisata'])) {
-            $kategori = $preferences['kategori_wisata'][0] ?? null;
+            $kategori = $preferences['kategori_wisata'] ?? null;
             $budgetMin = $preferences['budget_min'] ?? null;
             $budgetMax = $preferences['budget_max'] ?? null;
             $ratingMin = $preferences['rating_min'] ?? null;
@@ -42,7 +58,7 @@ class UserController extends Controller
                 budgetMin: $budgetMin,
                 budgetMax: $budgetMax,
                 ratingMin: $ratingMin,
-                topN: 5
+                topN: 20
             );
 
             if ($mlRecommendations) {
@@ -53,8 +69,13 @@ class UserController extends Controller
                         'kategori' => (object) ['nama_kategori' => $item['kategori'] ?? '-'],
                         'rating' => $item['rating'],
                         'alamat' => $item['alamat'],
-                        'harga' => $item['htm_min_domestik'],
+                        'htm_min_domestik' => $item['htm_min_domestik'] ?? 0,
+                        'htm_max_domestik' => $item['htm_max_domestik'] ?? 0,
                         'skor_rekomendasi' => $item['skor_rekomendasi'] ?? 0,
+                        'gambar' => Wisata::find($item['wisata_id'])
+                                ?->gambar()
+                            ->first()
+                                ?->gambar,
                     ];
                 });
             }
@@ -70,13 +91,21 @@ class UserController extends Controller
                     'kategori' => (object) ['nama_kategori' => $item['kategori'] ?? '-'],
                     'rating' => $item['rating'],
                     'alamat' => $item['alamat'],
-                    'harga' => $item['htm_min_domestik'],
+                    'htm_min_domestik' => $item['htm_min_domestik'] ?? 0,
+                    'htm_max_domestik' => $item['htm_max_domestik'] ?? 0,
                     'skor_rekomendasi' => 0,
+                    'gambar' => Wisata::find($item['wisata_id'])
+                            ?->gambar()
+                            ->first()
+                            ?->gambar,
                 ];
             });
         }
 
-        return Wisata::with('kategori')
+        return Wisata::with([
+            'kategori',
+            'gambar'
+        ])
             ->select('*')
             ->selectRaw('htm_min_domestik as harga')
             ->orderByDesc('rating')
@@ -87,7 +116,7 @@ class UserController extends Controller
     protected function getKulinerRecommendations($userId, $preferences)
     {
         if ($preferences && !empty($preferences['kategori_kuliner'])) {
-            $kategori = $preferences['kategori_kuliner'][0] ?? null;
+            $kategori = $preferences['kategori_kuliner'] ?? null;
             $budgetMin = $preferences['budget_min'] ?? null;
             $budgetMax = $preferences['budget_max'] ?? null;
             $ratingMin = $preferences['rating_min'] ?? null;
@@ -98,7 +127,7 @@ class UserController extends Controller
                 budgetMin: $budgetMin,
                 budgetMax: $budgetMax,
                 ratingMin: $ratingMin,
-                topN: 5
+                topN: 20
             );
 
             if ($mlRecommendations) {
@@ -109,8 +138,13 @@ class UserController extends Controller
                         'kategori' => (object) ['nama_kategori' => $item['kategori'] ?? '-'],
                         'rating' => $item['rating'],
                         'alamat' => $item['alamat'],
-                        'harga' => $item['htm_min'],
+                        'htm_min' => $item['htm_min'] ?? 0,
+                        'htm_max' => $item['htm_max'] ?? 0,
                         'skor_rekomendasi' => $item['skor_rekomendasi'] ?? 0,
+                        'gambar' => Kuliner::find($item['kuliner_id'])
+                                ?->gambar()
+                            ->first()
+                                ?->gambar,
                     ];
                 });
             }
@@ -128,11 +162,18 @@ class UserController extends Controller
                     'alamat' => $item['alamat'],
                     'harga' => $item['htm_min'],
                     'skor_rekomendasi' => 0,
+                    'gambar' => Kuliner::find($item['kuliner_id'])
+                            ?->gambar()
+                            ->first()
+                            ?->gambar,
                 ];
             });
         }
 
-        return Kuliner::with('kategori')
+        return Kuliner::with([
+            'kategori',
+            'gambar'
+        ])
             ->select('*')
             ->selectRaw('htm_min as harga')
             ->orderByDesc('rating')
@@ -142,21 +183,66 @@ class UserController extends Controller
 
     public function detailWisata($id)
     {
-        $data = Wisata::findOrFail($id);
+        $data = Wisata::with([
+            'kategori',
+            'gambar'
+        ])->findOrFail($id);
+
+        $isFavorit = false;
+        $userRating = null;
+
+        if (Auth::check()) {
+
+            $isFavorit = FavoritWisata::where('user_id', Auth::id())
+                ->where('wisata_id', $data->wisata_id)
+                ->exists();
+        }
+
+        if (auth()->check()) {
+
+            $userRating = \App\Models\RatingWisata::where('user_id', auth()->id())
+                ->where('wisata_id', $data->wisata_id)
+                ->value('nilai_rating');
+        }
 
         return view('user.detail_wisata', [
             'data' => $data,
-            'type' => 'wisata'
+            'type' => 'wisata',
+            'isFavorit' => $isFavorit,
+            'userRating' => $userRating
         ]);
     }
 
     public function detailKuliner($id)
     {
-        $data = Kuliner::findOrFail($id);
+        $data = Kuliner::with([
+            'kategori',
+            'gambar'
+        ])->findOrFail($id);
+
+        $isFavorit = false;
+
+        $userRating = null;
+
+        if (Auth::check()) {
+
+            $isFavorit = FavoritKuliner::where('user_id', Auth::id())
+                ->where('kuliner_id', $data->kuliner_id)
+                ->exists();
+        }
+
+        if (auth()->check()) {
+
+            $userRating = \App\Models\RatingKuliner::where('user_id', auth()->id())
+                ->where('kuliner_id', $data->kuliner_id)
+                ->value('nilai_rating');
+        }
 
         return view('user.detail_kuliner', [
             'data' => $data,
-            'type' => 'kuliner'
+            'type' => 'kuliner',
+            'isFavorit' => $isFavorit,
+            'userRating' => $userRating
         ]);
     }
 
@@ -169,7 +255,33 @@ class UserController extends Controller
 
     public function favorit()
     {
-        $favorit = [];
+        $favoritWisata = FavoritWisata::with(['wisata.kategori'])
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'type' => 'wisata',
+                    'created_at' => $item->created_at,
+                    'data' => $item
+                ];
+            });
+
+        $favoritKuliner = FavoritKuliner::with(['kuliner.kategori'])
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'type' => 'kuliner',
+                    'created_at' => $item->created_at,
+                    'data' => $item
+                ];
+            });
+
+        $favorit = $favoritWisata
+            ->concat($favoritKuliner)
+            ->sortByDesc('created_at');
 
         return view('user.favorit', compact('favorit'));
     }

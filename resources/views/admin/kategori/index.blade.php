@@ -2,107 +2,109 @@
 
 @section('content')
 
-    <div class="p-6">
+<div class="p-6 bg-gray-50 min-h-screen">
 
-        <!-- HEADER -->
-        <div class="flex justify-between items-center mb-6">
+    {{-- HEADER --}}
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-            <h2 class="text-xl font-semibold">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">
                 Kategori
             </h2>
-
-            <button onclick="openModal()" class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
-                + Tambah Kategori
-            </button>
-
+            <p class="text-sm text-gray-500 mt-1">
+                Kelola kategori wisata & kuliner
+            </p>
         </div>
 
-        <!-- ALERT SUCCESS -->
-        @if(session('success'))
+        <button onclick="openModal()"
+            class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-2xl shadow-sm transition font-semibold">
+            + Tambah Kategori
+        </button>
 
-            <div id="toastSuccess" class="fixed top-5 right-5 bg-green-500 text-white px-5 py-3 rounded-lg shadow-lg z-50">
+    </div>
 
-                {{ session('success') }}
+    {{-- TOAST --}}
+    @if(session('success'))
+        <div id="toastSuccess"
+            class="fixed top-6 right-6 bg-green-500 text-white px-5 py-3 rounded-2xl shadow-lg z-50">
+            {{ session('success') }}
+        </div>
+    @endif
 
-            </div>
 
-        @endif
+    {{-- TABLE CARD --}}
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
 
+        <div class="px-6 py-5 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-800">
+                Data Kategori
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+                Daftar semua kategori yang tersedia
+            </p>
+        </div>
 
-        <!-- TABLE -->
-        <div class="bg-white shadow rounded-xl p-4">
+        <div class="overflow-x-auto">
 
-            <table class="w-full text-left">
+            <table class="w-full text-sm">
 
-                <thead>
-                    <tr class="border-b text-gray-600 text-sm">
-
-                        <th class="py-3">No</th>
-                        <th>Nama Kategori</th>
-                        <th>Jenis</th>
-                        <th>Aksi</th>
-
+                <thead class="bg-gray-50 text-gray-600">
+                    <tr>
+                        <th class="text-left px-6 py-4 font-semibold">No</th>
+                        <th class="text-left px-6 py-4 font-semibold">Nama Kategori</th>
+                        <th class="text-left px-6 py-4 font-semibold">Jenis</th>
+                        <th class="text-left px-6 py-4 font-semibold">Aksi</th>
                     </tr>
                 </thead>
 
-
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
 
                     @foreach($kategori as $k)
+                        <tr class="hover:bg-gray-50 transition">
 
-                        <tr class="border-b hover:bg-gray-50">
-
-                            <td class="py-3">
+                            <td class="px-6 py-4 text-gray-700">
                                 {{ $loop->iteration }}
                             </td>
 
-                            <td>
+                            <td class="px-6 py-4 font-medium text-gray-800">
                                 {{ $k->nama_kategori }}
                             </td>
 
-
-                            <!-- BADGE JENIS -->
-                            <td>
+                            <td class="px-6 py-4">
 
                                 @if($k->jenis == 'wisata')
-
-                                    <span class="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-600">
                                         Wisata
                                     </span>
-
                                 @else
-
-                                    <span class="bg-orange-100 text-orange-700 text-sm px-3 py-1 rounded-full">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-orange-50 text-orange-600">
                                         Kuliner
                                     </span>
-
                                 @endif
 
                             </td>
 
+                            <td class="px-6 py-4">
 
-                            <!-- AKSI -->
-                            <td class="space-x-3">
+                                <div class="flex items-center gap-3">
 
-                                <button onclick="openEditModal({{ $k->id }}, '{{ $k->nama_kategori }}', '{{ $k->jenis }}')"
-                                    class="text-blue-600 hover:underline">
+                                    <button
+                                        onclick="openEditModal({{ $k->id }}, '{{ $k->nama_kategori }}', '{{ $k->jenis }}')"
+                                        class="text-blue-600 hover:text-blue-800 font-medium">
+                                        Edit
+                                    </button>
 
-                                    Edit
+                                    <button
+                                        onclick="openDeleteModal({{ $k->id }}, '{{ $k->nama_kategori }}')"
+                                        class="text-red-600 hover:text-red-800 font-medium">
+                                        Hapus
+                                    </button>
 
-                                </button>
-
-
-                                <button onclick="openDeleteModal({{ $k->id }}, '{{ $k->nama_kategori }}')"
-                                    class="text-red-600 hover:underline">
-
-                                    Hapus
-
-                                </button>
+                                </div>
 
                             </td>
 
                         </tr>
-
                     @endforeach
 
                 </tbody>
@@ -113,200 +115,180 @@
 
     </div>
 
-    <!-- MODAL TAMBAH -->
-    <div id="modalKategori" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
-
-        <div class="bg-white w-96 rounded-xl shadow-lg p-6">
-
-            <h2 class="text-lg font-semibold mb-4">
-                Tambah Kategori
-            </h2>
-
-            <form action="{{ route('kategori.store') }}" method="POST">
-
-                @csrf
-
-                <!-- Nama Kategori -->
-                <div class="mb-4">
-
-                    <label class="block text-sm mb-1">
-                        Nama Kategori
-                    </label>
-
-                    <input type="text" name="nama_kategori"
-                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-teal-300"
-                        required>
-
-                </div>
+</div>
 
 
-                <!-- Jenis -->
-                <div class="mb-6">
+{{-- ================= MODAL TAMBAH ================= --}}
+<div id="modalKategori"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
 
-                    <label class="block text-sm mb-1">
-                        Jenis
-                    </label>
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-6">
 
-                    <select name="jenis"
-                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-teal-300"
-                        required>
+        <h2 class="text-lg font-bold mb-4">
+            Tambah Kategori
+        </h2>
 
-                        <option value="">Pilih jenis</option>
-                        <option value="wisata">Wisata</option>
-                        <option value="kuliner">Kuliner</option>
+        <form action="{{ route('kategori.store') }}" method="POST">
+            @csrf
 
-                    </select>
-
-                </div>
-
-                <!-- Button -->
-                <div class="flex justify-end gap-2">
-
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-lg">
-                        Batal
-                    </button>
-
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
-                        Simpan
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-    <!-- MODAL EDIT -->
-    <div id="modalEdit" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
-
-        <div class="bg-white w-96 rounded-xl shadow-lg p-6">
-
-            <h2 class="text-lg font-semibold mb-4">
-                Edit Kategori
-            </h2>
-
-            <form id="formEdit" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="mb-4">
-                    <label class="block text-sm mb-1">Nama Kategori</label>
-                    <input type="text" name="nama_kategori" id="editNama" class="w-full border rounded-lg px-3 py-2"
-                        required>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm mb-1">Jenis</label>
-                    <select name="jenis" id="editJenis" class="w-full border rounded-lg px-3 py-2" required>
-                        <option value="wisata">Wisata</option>
-                        <option value="kuliner">Kuliner</option>
-                    </select>
-                </div>
-
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded-lg">
-                        Batal
-                    </button>
-
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg">
-                        Simpan
-                    </button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-
-    <!-- MODAL DELETE -->
-    <div id="modalDelete" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
-
-        <div class="bg-white w-96 rounded-xl shadow-lg p-6 text-center">
-
-            <h2 class="text-lg font-semibold mb-3">
-                Hapus Kategori
-            </h2>
-
-            <p class="text-gray-600 mb-6">
-                Apakah anda yakin ingin menghapus kategori
-                <b id="deleteNama"></b> ?
-            </p>
-
-            <div class="flex justify-center gap-3">
-
-                <button onclick="closeDeleteModal()" class="px-4 py-2 border rounded-lg">
-                    Tidak
-                </button>
-
-                <form id="formDelete" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="bg-red-600 text-white px-4 py-2 rounded-lg">
-                        Ya
-                    </button>
-                </form>
-
+            <div class="mb-4">
+                <label class="text-sm text-gray-600">Nama Kategori</label>
+                <input type="text" name="nama_kategori"
+                    class="w-full mt-1 border rounded-2xl px-4 py-3 focus:ring-2 focus:ring-teal-200 outline-none"
+                    required>
             </div>
 
-        </div>
+            <div class="mb-6">
+                <label class="text-sm text-gray-600">Jenis</label>
+                <select name="jenis"
+                    class="w-full mt-1 border rounded-2xl px-4 py-3 focus:ring-2 focus:ring-teal-200 outline-none"
+                    required>
+                    <option value="">Pilih jenis</option>
+                    <option value="wisata">Wisata</option>
+                    <option value="kuliner">Kuliner</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeModal()"
+                    class="px-4 py-2 rounded-2xl border">
+                    Batal
+                </button>
+
+                <button class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-2xl">
+                    Simpan
+                </button>
+            </div>
+
+        </form>
+
     </div>
+</div>
 
-    <script>
-        function openModal() {
-            document.getElementById('modalKategori').classList.remove('hidden');
-            document.getElementById('modalKategori').classList.add('flex');
-        }
 
-        function closeModal() {
-            document.getElementById('modalKategori').classList.remove('flex');
-            document.getElementById('modalKategori').classList.add('hidden');
-        }
+{{-- MODAL EDIT --}}
+<div id="modalEdit"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
 
-        // OPEN EDIT MODAL
-        function openEditModal(id, nama, jenis) {
-            const modal = document.getElementById('modalEdit');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-6">
 
-            document.getElementById('editNama').value = nama;
-            document.getElementById('editJenis').value = jenis;
+        <h2 class="text-lg font-bold mb-4">Edit Kategori</h2>
 
-            document.getElementById('formEdit').action = "/admin/kategori/" + id;
-        }
+        <form id="formEdit" method="POST">
+            @csrf
+            @method('PUT')
 
-        // CLOSE EDIT
-        function closeEditModal() {
-            const modal = document.getElementById('modalEdit');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
+            <div class="mb-4">
+                <label class="text-sm text-gray-600">Nama Kategori</label>
+                <input type="text" id="editNama" name="nama_kategori"
+                    class="w-full mt-1 border rounded-2xl px-4 py-3">
+            </div>
 
-        // OPEN DELETE MODAL
-        function openDeleteModal(id, nama) {
-            const modal = document.getElementById('modalDelete');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            <div class="mb-6">
+                <label class="text-sm text-gray-600">Jenis</label>
+                <select id="editJenis" name="jenis"
+                    class="w-full mt-1 border rounded-2xl px-4 py-3">
+                    <option value="wisata">Wisata</option>
+                    <option value="kuliner">Kuliner</option>
+                </select>
+            </div>
 
-            document.getElementById('deleteNama').innerText = nama;
-            document.getElementById('formDelete').action = "/admin/kategori/" + id;
-        }
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded-2xl">
+                    Batal
+                </button>
 
-        // CLOSE DELETE
-        function closeDeleteModal() {
-            const modal = document.getElementById('modalDelete');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
+                <button class="bg-teal-600 text-white px-5 py-2 rounded-2xl">
+                    Simpan
+                </button>
+            </div>
 
-        setTimeout(function () {
-            let toast = document.getElementById('toastSuccess');
+        </form>
 
-            if (toast) {
-                toast.style.opacity = '0';
-                toast.style.transition = '0.5s';
+    </div>
+</div>
 
-                setTimeout(() => toast.remove(), 500);
-            }
-        }, 3000);
-    </script>
+
+{{-- MODAL DELETE --}}
+<div id="modalDelete"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-6 text-center">
+
+        <h2 class="text-lg font-bold mb-2">Hapus Kategori</h2>
+
+        <p class="text-gray-500 mb-6">
+            Yakin ingin menghapus <b id="deleteNama"></b> ?
+        </p>
+
+        <div class="flex justify-center gap-3">
+
+            <button onclick="closeDeleteModal()" class="px-4 py-2 border rounded-2xl">
+                Tidak
+            </button>
+
+            <form id="formDelete" method="POST">
+                @csrf
+                @method('DELETE')
+                <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-2xl">
+                    Ya, Hapus
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+function openModal() {
+    document.getElementById('modalKategori').classList.remove('hidden');
+    document.getElementById('modalKategori').classList.add('flex');
+}
+
+function closeModal() {
+    document.getElementById('modalKategori').classList.add('hidden');
+    document.getElementById('modalKategori').classList.remove('flex');
+}
+
+function openEditModal(id, nama, jenis) {
+    document.getElementById('modalEdit').classList.remove('hidden');
+    document.getElementById('modalEdit').classList.add('flex');
+
+    document.getElementById('editNama').value = nama;
+    document.getElementById('editJenis').value = jenis;
+
+    document.getElementById('formEdit').action = "/admin/kategori/" + id;
+}
+
+function closeEditModal() {
+    document.getElementById('modalEdit').classList.add('hidden');
+    document.getElementById('modalEdit').classList.remove('flex');
+}
+
+function openDeleteModal(id, nama) {
+    document.getElementById('modalDelete').classList.remove('hidden');
+    document.getElementById('modalDelete').classList.add('flex');
+
+    document.getElementById('deleteNama').innerText = nama;
+    document.getElementById('formDelete').action = "/admin/kategori/" + id;
+}
+
+function closeDeleteModal() {
+    document.getElementById('modalDelete').classList.add('hidden');
+    document.getElementById('modalDelete').classList.remove('flex');
+}
+
+setTimeout(() => {
+    let toast = document.getElementById('toastSuccess');
+    if (toast) {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }
+}, 3000);
+
+</script>
+
 @endsection

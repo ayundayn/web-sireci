@@ -14,4 +14,14 @@ class RatingKuliner extends Model
         'kuliner_id',
         'nilai_rating'
     ];
+
+    public function kuliner()
+    {
+        return $this->belongsTo(Kuliner::class, 'kuliner_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -13,4 +13,9 @@ class FavoritKuliner extends Model
         'user_id',
         'kuliner_id'
     ];
+
+    public function kuliner()
+    {
+        return $this->belongsTo(Kuliner::class, 'kuliner_id', 'kuliner_id');
+    }
 }

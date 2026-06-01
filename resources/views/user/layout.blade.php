@@ -94,12 +94,18 @@
             <!-- LEFT -->
             <div class="left-section">
                 <div class="logo">
-                    <span class="brand-main">Banyu</span><span class="brand-sub">Guide</span>
+                    <a href="{{ url('/') }}" style="text-decoration: none;">
+                        <span class="brand-main">SI</span><span class="brand-sub">RECI</span>
+                    </a>
                 </div>
 
-                <!-- <div class="sub-menu">
-                    <a href="{{ route('favorit') }}">Favorit</a>
-                </div> -->
+                <div class="sub-menu">
+                    <a href="{{ route('favorit') }}" class="{{ request()->routeIs('favorit') ? 'active-menu' : '' }}">
+
+                        Favorit
+
+                    </a>
+                </div>
             </div>
 
             <!-- SEARCH -->
@@ -111,11 +117,103 @@
 
             <!-- RIGHT -->
             <div class="right-section">
-                <a href="{{ url('auth/google') }}" class="btn-login">Masuk</a>
+
+                @auth
+                    <div class="dropdown">
+
+                        <button class="profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                            <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                                alt="User" class="user-avatar">
+
+                            <span class="profile-name">
+                                {{ Auth::user()->name }}
+                            </span>
+
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end custom-dropdown">
+
+                            <li class="px-3 py-2">
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                                        alt="User" class="dropdown-avatar">
+
+                                    <div>
+                                        <div class="fw-semibold">
+                                            {{ Auth::user()->name }}
+                                        </div>
+
+                                        <small class="text-muted">
+                                            User
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+
+                                    <button type="submit" class="dropdown-item logout-btn">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                @else
+                    <button type="button" class="btn-login" onclick="showLoginModal()">
+                        Masuk
+                    </button>
+                @endauth
+
             </div>
 
         </div>
     </nav>
+
+    <div id="loginModal" class="login-overlay" onclick="closeLoginModal()">
+
+        <div class="login-card-modern" onclick="event.stopPropagation()">
+
+            <button class="login-close" onclick="closeLoginModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="login-icon-modern">
+                <i class="bi bi-geo-alt"></i>
+            </div>
+
+            <h2 id="loginModalTitle">
+                Mau disimpan?<br>
+                Masuk untuk menambahkan<br>
+                destinasi ke daftar favorit.
+            </h2>
+
+            <a href="{{ url('auth/google') }}" class="btn-google-modern">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+                Lanjutkan dengan Google
+            </a>
+
+            <p class="login-footer-text">
+                Dengan melanjutkan, berarti Anda menyetujui Persyaratan
+                Penggunaan serta mengonfirmasi bahwa Anda telah membaca
+                Pernyataan Privasi dan Cookie kami.
+            </p>
+
+        </div>
+
+    </div>
 
     <div class="content bg-white">
         @yield('content')
@@ -132,8 +230,43 @@
                 behavior: 'smooth'
             });
         }
+
+        function showLoginModal(type = 'favorit') {
+
+            const title = document.getElementById('loginModalTitle');
+
+            if (type === 'rating') {
+
+                title.innerHTML = `
+            Mau memberi rating?<br>
+            Masuk terlebih dahulu<br>
+            untuk memberikan penilaian.
+        `;
+
+            } else {
+
+                title.innerHTML = `
+            Mau disimpan?<br>
+            Masuk untuk menambahkan<br>
+            destinasi ke daftar favorit.
+        `;
+            }
+
+            document.getElementById('loginModal').classList.add('show');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('show');
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeLoginModal();
+            }
+        });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

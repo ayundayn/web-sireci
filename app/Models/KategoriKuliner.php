@@ -15,4 +15,13 @@ class KategoriKuliner extends Model
         'nama_kategori'
     ];
 
+    public function preferences()
+    {
+        return $this->belongsToMany(
+            KulinerPreference::class,
+            'kuliner_preference_kategori',
+            'kategori_kuliner_id',
+            'kuliner_preference_id'
+        );
+    }
 }

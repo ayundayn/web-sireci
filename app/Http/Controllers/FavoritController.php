@@ -9,50 +9,56 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoritController extends Controller
 {
-public function toggle(Request $request)
-{
-    $userId = Auth::id();
-    $id = $request->id;
-    $type = $request->type; // wisata / kuliner
-
-    if ($type === 'wisata') {
-
-        $favorit = FavoritWisata::where('user_id', $userId)
-            ->where('wisata_id', $id)
-            ->first();
-
-        if ($favorit) {
-            $favorit->delete();
-            return response()->json(['status' => 'removed']);
+    public function toggle(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
         }
 
-        FavoritWisata::create([
-            'user_id' => $userId,
-            'wisata_id' => $id
-        ]);
+        $userId = Auth::id();
+        $id = $request->id;
+        $type = $request->type; // wisata / kuliner
 
-        return response()->json(['status' => 'added']);
-    }
+        if ($type === 'wisata') {
 
-    if ($type === 'kuliner') {
+            $favorit = FavoritWisata::where('user_id', $userId)
+                ->where('wisata_id', $id)
+                ->first();
 
-        $favorit = FavoritKuliner::where('user_id', $userId)
-            ->where('kuliner_id', $id)
-            ->first();
+            if ($favorit) {
+                $favorit->delete();
+                return response()->json(['status' => 'removed']);
+            }
 
-        if ($favorit) {
-            $favorit->delete();
-            return response()->json(['status' => 'removed']);
+            FavoritWisata::create([
+                'user_id' => $userId,
+                'wisata_id' => $id
+            ]);
+
+            return response()->json(['status' => 'added']);
         }
 
-        FavoritKuliner::create([
-            'user_id' => $userId,
-            'kuliner_id' => $id
-        ]);
+        if ($type === 'kuliner') {
 
-        return response()->json(['status' => 'added']);
+            $favorit = FavoritKuliner::where('user_id', $userId)
+                ->where('kuliner_id', $id)
+                ->first();
+
+            if ($favorit) {
+                $favorit->delete();
+                return response()->json(['status' => 'removed']);
+            }
+
+            FavoritKuliner::create([
+                'user_id' => $userId,
+                'kuliner_id' => $id
+            ]);
+
+            return response()->json(['status' => 'added']);
+        }
+
+        return response()->json(['error' => 'invalid type'], 400);
     }
-
-    return response()->json(['error' => 'invalid type'], 400);
-}
 }

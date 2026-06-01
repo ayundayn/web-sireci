@@ -6,7 +6,9 @@
         <div class="container py-4">
 
             <!-- BACK -->
-            <a href="/" class="back-link">← Kembali</a>
+            <a href="{{ url()->previous() }}" class="back-link">
+                ← Kembali
+            </a>
 
             <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-start mt-3 flex-wrap gap-3">
@@ -30,23 +32,53 @@
                 </div>
 
                 <!-- FAVORIT -->
-                <button class="btn btn-outline-main btn-favorit" data-id="{{ $data->wisata_id }}" data-type="{{ $type }}">
-                    ❤ Simpan
+                <button class="btn btn-outline-main btn-favorit {{ $isFavorit ? 'active' : '' }}"
+                    data-id="{{ $data->wisata_id }}" data-type="{{ $type }}">
+
+                    {{ $isFavorit ? '❤ Tersimpan' : '❤ Simpan' }}
+
                 </button>
 
             </div>
 
-            <!-- IMAGE -->
-            <div class="row mt-4 g-3">
-                <div class="col-md-6">
-                    <img src="{{ asset($data->gambar ?? 'asset/images/background.png') }}"
-                        class="img-fluid rounded main-img">
-                </div>
+            <!-- IMAGE SLIDER -->
+            <div class="mt-4">
 
-                <div class="col-md-6">
-                    <img src="{{ asset($data->gambar ?? 'asset/images/background.png') }}"
-                        class="img-fluid rounded main-img">
-                </div>
+                @if($data->gambar->count() > 0)
+
+                    <div class="gallery-grid">
+
+                        <div class="gallery-item">
+                            <img id="img1" src="{{ asset('uploads/wisata/' . $data->gambar[0]->gambar) }}"
+                                onclick="openGalleryModal()">
+                        </div>
+
+                        <div class="gallery-item">
+                            <img id="img2"
+                                src="{{ asset('uploads/wisata/' . ($data->gambar[1]->gambar ?? $data->gambar[0]->gambar)) }} onclick="
+                                openGalleryModal()">
+                        </div>
+
+                        @if($data->gambar->count() > 2)
+
+                            <button class="gallery-btn prev" onclick="changeImage(-1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+
+                            <button class="gallery-btn next" onclick="changeImage(1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                        @endif
+
+                    </div>
+
+                @else
+
+                    <img src="{{ asset('asset/images/background.png') }}" class="slider-image">
+
+                @endif
+
             </div>
 
             <!-- INFO -->
@@ -79,7 +111,9 @@
 
                 <!-- HTM -->
                 <div class="col-md-6">
-                    <h5 class="section-title">HTM</h5>
+                    <h5 class="section-title">
+                        <i class="bi bi-ticket-perforated"></i> HTM
+                    </h5>
 
                     <div class="info-box text-center htm-box">
 
@@ -133,14 +167,23 @@
 
             <!-- AKSES -->
             <div class="mt-5">
-                <h5 class="section-title">🚗 Akses Transportasi</h5>
+                <h5 class="section-title">
+                    <i class="bi bi-bus-front"></i> Akses Transportasi
+                </h5>
 
                 @if(!empty($data->akses_transportasi))
+
+                    @php
+                        $akses = str_replace(["[", "]", "'"], "", $data->akses_transportasi);
+                        $aksesArray = preg_split('/\s+/', trim($akses));
+                    @endphp
+
                     <ul class="mt-2">
-                        @foreach(explode(',', $data->akses_transportasi) as $item)
-                            <li>{{ trim($item) }}</li>
+                        @foreach($aksesArray as $item)
+                            <li>{{ $item }}</li>
                         @endforeach
                     </ul>
+
                 @else
                     <p class="mt-2">Tidak tersedia</p>
                 @endif
@@ -148,7 +191,9 @@
 
             <!-- MAP -->
             <div class="mt-5">
-                <h5 class="section-title">📍 Lokasi</h5>
+                <h5 class="section-title">
+                    <i class="bi bi-geo-alt"></i> Lokasi
+                </h5>
 
                 <div class="map-box">
                     @if($data->lokasi_geo)
@@ -161,54 +206,330 @@
                 </div>
             </div>
 
+            <!-- USER RATING -->
+            <div class="mt-5 text-center">
+
+                <h5 class="section-title">
+                    Berikan Rating
+                </h5>
+
+                <div class="d-flex justify-content-center gap-2 mt-3 rating-container">
+
+                    @for($i = 1; $i <= 5; $i++)
+
+                        <i class="bi bi-star star-rating" data-rating="{{ $i }}"
+                            style="
+                                                                                                                                                                                                                                                                                                                                                    font-size: 34px;
+                                                                                                                                                                                                                                                                                                                                                    cursor: pointer;
+                                                                                                                                                                                                                                                                                                                                                    color: #ffc107;
+                                                                                                                                                                                                                                                                                                                                                    transition: 0.2s;
+                                                                                                                                                                                                                                                                                                                                                ">
+                        </i>
+
+                    @endfor
+
+                </div>
+
+            </div>
+
+            @if($data->gambar->count() > 0)
+
+                <div id="galleryModal" class="gallery-modal" onclick="closeGalleryModal(event)">
+
+                    <button class="modal-nav modal-prev" onclick="event.stopPropagation(); changeImage(-1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+
+                    <img id="modalImage" class="gallery-modal-image" onclick="event.stopPropagation()">
+
+                    <button class="modal-nav modal-next" onclick="event.stopPropagation(); changeImage(1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+
+                    <span class="gallery-close" onclick="event.stopPropagation(); closeGalleryModal()">
+                        &times;
+                    </span>
+
+                    <div class="gallery-counter">
+                        <span id="modalCounter">1</span> /
+                        {{ $data->gambar->count() }}
+                    </div>
+
+                </div>
+
+            @endif
+
         </div>
     </div>
 
-@endsection
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
 
-<script>
-    document.querySelectorAll('.btn-favorit').forEach(btn => {
+        document.querySelectorAll('.btn-favorit').forEach(btn => {
 
-        btn.addEventListener('click', function () {
+            btn.addEventListener('click', function () {
 
-            let id = this.dataset.id;
-            let type = this.dataset.type;
+                let id = this.dataset.id;
+                let type = this.dataset.type;
 
-            fetch("{{ route('favorit.toggle') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    id: id,
-                    type: type
+                fetch("{{ route('favorit.toggle') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        type: type
+                    })
                 })
-            })
-                .then(res => {
-                    if (res.status === 401) {
-                        window.location.href = "/login";
-                        return;
-                    }
-                    return res.json();
-                })
-                .then(data => {
+                    .then(async res => {
 
-                    if (!data) return;
+                        if (!res.ok) {
 
-                    if (data.status === 'added') {
-                        this.innerHTML = "❤ Tersimpan";
-                        this.classList.add('active');
-                    } else {
-                        this.innerHTML = "❤ Simpan";
-                        this.classList.remove('active');
-                    }
+                            if (res.status === 401) {
+                                showLoginModal('favorit');
+                                return;
+                            }
 
-                });
+                            throw new Error("Request gagal");
+                        }
+
+                        return res.json();
+                    })
+                    .then(data => {
+
+                        if (!data) return;
+
+                        if (data.status === 'added') {
+
+                            this.innerHTML = "❤ Tersimpan";
+                            this.classList.add('active');
+
+                        } else {
+
+                            this.innerHTML = "❤ Simpan";
+                            this.classList.remove('active');
+                        }
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        alert('Terjadi kesalahan');
+                    });
+
+            });
 
         });
 
-    });
-</script>
+        const stars = document.querySelectorAll('.star-rating');
+
+        let selectedRating = {{ $userRating ?? 0 }};
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMPILKAN RATING AWAL
+        |--------------------------------------------------------------------------
+        */
+
+        function renderStars(rating) {
+
+            stars.forEach(star => {
+
+                let value = parseInt(star.dataset.rating);
+
+                if (value <= rating) {
+
+                    star.classList.remove('bi-star');
+                    star.classList.add('bi-star-fill');
+
+                } else {
+
+                    star.classList.remove('bi-star-fill');
+                    star.classList.add('bi-star');
+
+                }
+
+            });
+
+        }
+
+        renderStars(selectedRating);
+
+        /*
+        |--------------------------------------------------------------------------
+        | HOVER EFFECT
+        |--------------------------------------------------------------------------
+        */
+
+        stars.forEach(star => {
+
+            star.addEventListener('mouseenter', function () {
+
+                let rating = parseInt(this.dataset.rating);
+
+                renderStars(rating);
+
+            });
+
+            star.addEventListener('mouseleave', function () {
+
+                renderStars(selectedRating);
+
+            });
+
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | CLICK RATING
+        |--------------------------------------------------------------------------
+        */
+
+        stars.forEach(star => {
+
+            star.addEventListener('click', function () {
+
+                let rating = parseInt(this.dataset.rating);
+
+                fetch("{{ route('rating.store') }}", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+
+                    body: JSON.stringify({
+
+                        id: "{{ $type == 'wisata' ? $data->wisata_id : $data->kuliner_id }}",
+                        type: "{{ $type }}",
+                        rating: rating
+
+                    })
+
+                })
+
+                    .then(res => {
+
+                        if (res.status === 401) {
+                            showLoginModal('rating');
+                            return;
+                        }
+
+                        return res.json();
+
+                    })
+
+                    .then(data => {
+
+                        if (!data) return;
+
+                        selectedRating = rating;
+
+                        renderStars(selectedRating);
+
+                    })
+
+                    .catch(err => {
+
+                        console.log(err);
+
+                    });
+
+            });
+
+        });
+
+        @if($data->gambar->count() > 0)
+
+            const galleryImages = [
+                @foreach($data->gambar as $gambar)
+                    "{{ asset('uploads/wisata/' . $gambar->gambar) }}",
+                @endforeach
+                                                                                                                                                                                            ];
+
+            let currentIndex = 0;
+
+            function renderGallery() {
+
+                document.getElementById('img1').src =
+                    galleryImages[currentIndex];
+
+                document.getElementById('img2').src =
+                    galleryImages[
+                    (currentIndex + 1) % galleryImages.length
+                    ];
+
+                const modalImage =
+                    document.getElementById('modalImage');
+
+                if (modalImage) {
+                    modalImage.src =
+                        galleryImages[currentIndex];
+                }
+
+                const counter =
+                    document.getElementById('modalCounter');
+
+                if (counter) {
+                    counter.innerText =
+                        currentIndex + 1;
+                }
+            }
+
+            function changeImage(direction) {
+
+                currentIndex += direction;
+
+                if (currentIndex < 0) {
+                    currentIndex = galleryImages.length - 1;
+                }
+
+                if (currentIndex >= galleryImages.length) {
+                    currentIndex = 0;
+                }
+
+                renderGallery();
+            }
+
+            function openGalleryModal() {
+
+                document
+                    .getElementById('galleryModal')
+                    .classList.add('show');
+
+                document
+                    .getElementById('modalImage')
+                    .src = galleryImages[currentIndex];
+
+            }
+
+            function closeGalleryModal(event = null) {
+
+                if (
+                    event &&
+                    event.target !==
+                    document.getElementById('galleryModal')
+                ) {
+                    return;
+                }
+
+                document
+                    .getElementById('galleryModal')
+                    .classList.remove('show');
+            }
+
+            renderGallery();
+
+            @if($data->gambar->count() > 2)
+                setInterval(() => {
+                    changeImage(1);
+                }, 5000);
+            @endif
+        @endif
+
+    </script>
+@endsection

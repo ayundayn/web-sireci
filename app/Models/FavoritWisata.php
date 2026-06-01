@@ -13,4 +13,9 @@ class FavoritWisata extends Model
         'user_id',
         'wisata_id'
     ];
+
+    public function wisata()
+    {
+        return $this->belongsTo(Wisata::class, 'wisata_id', 'wisata_id');
+    }
 }

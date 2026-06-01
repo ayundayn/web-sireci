@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layout.app')
 
 @section('title', 'Data Wisata')
 
@@ -7,32 +7,61 @@
     <div class="main-content-wrapper p-6 bg-gray-50 min-h-screen">
 
         {{-- HEADER --}}
-        <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex justify-between items-center">
+        <div class="bg-white shadow-sm rounded-2xl border border-gray-100 p-5 mb-6">
 
-            <div class="flex items-center gap-4">
-                <h1 class="text-2xl font-bold text-teal-600">
-                    Data Wisata
-                </h1>
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
 
-                <a href="{{ route('admin.wisata.create') }}"
-                    class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm">
-                    + Tambah Wisata
-                </a>
+                {{-- LEFT --}}
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">
+                            Data Wisata
+                        </h1>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                            Kelola data destinasi wisata SIRECI
+                        </p>
+                    </div>
+
+                    <a href="{{ route('admin.wisata.create') }}"
+                        class="inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition w-fit">
+
+                        <span class="text-lg leading-none">+</span>
+
+                        Tambah Wisata
+
+                    </a>
+
+                </div>
+
+
+                {{-- RIGHT --}}
+                <form action="{{ route('admin.wisata.index') }}" method="GET" class="w-full lg:w-[340px]">
+
+                    <div class="relative">
+
+                        <input type="text" name="keyword" id="searchInput" value="{{ request('keyword') }}"
+                            placeholder="Cari wisata..." autocomplete="off"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
             </div>
-
-            {{-- SEARCH --}}
-            <form action="{{ route('admin.wisata.index') }}" method="GET" class="flex w-80">
-
-                <input type="text" placeholder="Cari tempat..."
-                    class="flex-grow px-4 py-2 rounded-l-xl border border-gray-200 bg-gray-100 focus:outline-none"
-                    name="keyword" value="{{ request('keyword') }}" />
-
-                <button type="submit"
-                    class="px-4 py-2 bg-gray-100 border border-l-0 border-gray-200 rounded-r-xl hover:bg-gray-200">
-                    🔍
-                </button>
-
-            </form>
 
         </div>
 
@@ -87,7 +116,7 @@
                                     </td>
 
                                     <td class="px-5 py-4 border-b text-sm text-center">
-                                        {{ $data->kategori }}
+                                        {{ $data->kategori->nama_kategori ?? '-' }}
                                     </td>
 
                                     <td class="px-5 py-4 border-b text-sm text-center">
@@ -98,17 +127,17 @@
 
                                         <div class="flex justify-center gap-2">
 
-                                            <a href="{{ route('admin.wisata.show', $data->id) }}"
+                                            <a href="{{ route('admin.wisata.show', $data->wisata_id) }}"
                                                 class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">
                                                 Detail
                                             </a>
 
-                                            <a href="{{ route('admin.wisata.edit', $data->id) }}"
+                                            <a href="{{ route('admin.wisata.edit', $data->wisata_id) }}"
                                                 class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-lg">
                                                 Edit
                                             </a>
 
-                                            <button onclick="showDeletePopup({{ $data->id }})"
+                                            <button onclick="openDeleteModal({{ $data->wisata_id }})"
                                                 class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3 rounded-lg">
                                                 Hapus
                                             </button>
@@ -182,6 +211,103 @@
 
         </div>
 
+        <form id="deleteForm" method="POST" style="display:none;">
+            @csrf
+            @method('DELETE')
+        </form>
+
+        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+
+            <div class="bg-white rounded-xl shadow-lg w-96 p-6 text-center">
+
+                <h2 class="text-lg font-bold mb-3">Hapus Data?</h2>
+
+                <p class="text-sm text-gray-600 mb-6">
+                    Data wisata ini akan dihapus secara permanen.
+                </p>
+
+                <div class="flex justify-center gap-3">
+
+                    <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        Batal
+                    </button>
+
+                    <button onclick="submitDelete()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="toast" class="fixed bottom-5 right-5 hidden text-white px-4 py-3 rounded-lg shadow-lg z-50">
+        </div>
+
     </div>
+
+    <script>
+        let deleteId = null;
+
+        let timer;
+
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+
+                this.form.submit();
+
+            }, 400);
+
+        });
+
+        function openDeleteModal(id) {
+            deleteId = id;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            deleteId = null;
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+        }
+
+        function submitDelete() {
+            let form = document.getElementById('deleteForm');
+            form.action = '/admin/wisata/' + deleteId;
+            form.submit();
+        }
+
+        function showToast(message, bgColor = 'bg-green-600') {
+            let toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.className = `fixed bottom-5 right-5 px-4 py-3 rounded-lg shadow-lg z-50 text-white ${bgColor}`;
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        window.addEventListener('load', function () {
+
+            @if(session('success'))
+                showToast("{{ session('success') }}", 'bg-green-600');
+            @endif
+
+            @if(session('updated'))
+                showToast("{{ session('updated') }}", 'bg-blue-600');
+            @endif
+
+            @if(session('deleted'))
+                showToast("{{ session('deleted') }}", 'bg-red-600');
+            @endif
+
+                            });
+    </script>
 
 @endsection

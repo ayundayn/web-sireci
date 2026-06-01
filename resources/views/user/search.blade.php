@@ -7,57 +7,59 @@
 
             <!-- SIDEBAR FILTER -->
             <div class="col-md-3">
-                <div class="filter-box">
+                <div class="sticky-filter">
+                    <div class="filter-box">
 
-                    <h5 class="filter-title">
-                        <i class="bi bi-funnel me-2"></i> FILTER
-                    </h5>
+                        <h5 class="filter-title">
+                            <i class="bi bi-funnel me-2"></i> FILTER
+                        </h5>
 
-                    <form method="GET" action="{{ route('search') }}">
+                        <form method="GET" action="{{ route('search') }}">
 
-                        <!-- Biar state tidak hilang -->
-                        <input type="hidden" name="q" value="{{ request('q') }}">
-                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                            <!-- Biar state tidak hilang -->
+                            <input type="hidden" name="q" value="{{ request('q') }}">
+                            <input type="hidden" name="sort" value="{{ request('sort') }}">
 
-                        <!-- Rentang Harga -->
-                        <p class="filter-subtitle">Rentang Harga</p>
+                            <!-- Rentang Harga -->
+                            <p class="filter-subtitle">Rentang Harga</p>
 
-                        <div class="price-range">
-                            <input type="number" name="min_harga" value="{{ request('min_harga') }}" placeholder="MIN">
-                            <span class="divider">—</span>
-                            <input type="number" name="max_harga" value="{{ request('max_harga') }}" placeholder="MAX">
-                        </div>
+                            <div class="price-range">
+                                <input type="number" name="min_harga" value="{{ request('min_harga') }}" placeholder="MIN">
+                                <span class="divider">—</span>
+                                <input type="number" name="max_harga" value="{{ request('max_harga') }}" placeholder="MAX">
+                            </div>
 
-                        <hr>
+                            <hr>
 
-                        <!-- Penilaian -->
-                        <p class="filter-subtitle">Penilaian</p>
+                            <!-- Penilaian -->
+                            <p class="filter-subtitle">Penilaian</p>
 
-                        <div class="rating-filter">
-                            @for ($i = 5; $i >= 1; $i--)
-                                <label class="rating-item">
-                                    <input type="radio" name="rating" value="{{ $i }}"
-                                        {{ request('rating') == $i ? 'checked' : '' }}>
-                                    <span class="stars">
-                                        {{ str_repeat('★', $i) . str_repeat('☆', 5 - $i) }}
-                                    </span>
-                                </label>
-                            @endfor
-                        </div>
+                            <div class="rating-filter">
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <label class="rating-item">
+                                        <input type="radio" name="rating" value="{{ $i }}"
+                                            {{ request('rating') == $i ? 'checked' : '' }}>
+                                        <span class="stars">
+                                            {{ str_repeat('★', $i) . str_repeat('☆', 5 - $i) }}
+                                        </span>
+                                    </label>
+                                @endfor
+                            </div>
 
-                        <!-- Button -->
-                        <div class="filter-button d-flex gap-2 flex-wrap">
-                            <a href="{{ route('search', ['q' => request('q')]) }}"
-                               class="btn-reset flex-fill">
-                                Atur Ulang
-                            </a>
+                            <!-- Button -->
+                            <div class="filter-button d-flex gap-2 flex-wrap">
+                                <button type="submit" class="btn-apply flex-fill">
+                                    Terapkan
+                                </button>
 
-                            <button type="submit" class="btn-apply flex-fill">
-                                Terapkan
-                            </button>
-                        </div>
+                                <a href="{{ route('search', ['q' => request('q')]) }}"
+                                class="btn-reset flex-fill">
+                                    Atur Ulang
+                                </a>
+                            </div>
 
-                    </form> <!-- ❗ FIX: FORM DITUTUP -->
+                        </form> <!-- ❗ FIX: FORM DITUTUP -->
+                    </div>
                 </div>
             </div>
 
@@ -66,8 +68,8 @@
 
                 <!-- HEADER -->
                 <div class="d-flex align-items-center mb-3 gap-2">
-                    <a href="/" class="btn-back">
-                     <i class="bi bi-arrow-left"></i>
+                    <a href="{{ url('/') }}" class="btn btn-light rounded-circle shadow-sm">
+                        ←
                     </a>
 
                     <h5 class="mb-0">
@@ -96,81 +98,161 @@
 
                     <!-- Penilaian -->
                     <div class="sort-dropdown position-relative">
-                        <button type="button" class="sort-btn multi dropdown-toggle">
+
+                        <button type="button"
+                            class="sort-btn multi dropdown-toggle
+                            {{ str_contains(request('sort'), 'rating') ? 'active' : '' }}">
                             Penilaian
                         </button>
 
                         <div class="dropdown-menu-custom">
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_desc'])) }}" class="dropdown-item">
+
+                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_desc'])) }}"
+                                class="dropdown-item
+                                {{ request('sort')=='rating_desc' ? 'active-dropdown' : '' }}">
+
                                 Tertinggi
+
                             </a>
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_asc'])) }}" class="dropdown-item">
+
+                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_asc'])) }}"
+                                class="dropdown-item
+                                {{ request('sort')=='rating_asc' ? 'active-dropdown' : '' }}">
+
                                 Terendah
+
                             </a>
+
                         </div>
+
                     </div>
 
                     <!-- Harga -->
                     <div class="sort-dropdown position-relative">
-                        <button type="button" class="sort-btn multi dropdown-toggle">
+
+                        <button type="button"
+                            class="sort-btn multi dropdown-toggle
+                            {{ str_contains(request('sort'), 'harga') ? 'active' : '' }}">
                             Harga
                         </button>
 
                         <div class="dropdown-menu-custom">
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_desc'])) }}" class="dropdown-item">
+
+                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_desc'])) }}"
+                                class="dropdown-item
+                                {{ request('sort')=='harga_desc' ? 'active-dropdown' : '' }}">
+
                                 Tertinggi
+
                             </a>
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_asc'])) }}" class="dropdown-item">
+
+                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_asc'])) }}"
+                                class="dropdown-item
+                                {{ request('sort')=='harga_asc' ? 'active-dropdown' : '' }}">
+
                                 Terendah
+
                             </a>
+
                         </div>
+
                     </div>
                 </div>
 
                 <!-- CARD -->
                 <div class="row">
+
                     @forelse($results as $item)
+
+                        @php
+
+                            $isWisata = $item->type === 'wisata';
+
+                            $detailRoute = $isWisata
+                                ? route('detail.wisata', $item->wisata_id)
+                                : route('detail.kuliner', $item->kuliner_id);
+
+                        @endphp
+
                         <div class="col-md-6 mb-4">
-                            @if($item->id)
-                                <a href="{{ route('detail.' . $item->type, $item->id) }}">
-                            @endif
 
-                                    <div class="card wisata-card">
+                            <div class="card wisata-card search-clickable"
+                                onclick="window.location='{{ $detailRoute }}'"
+                                style="cursor:pointer;">
 
-                                        <img src="{{ asset('asset/images/background.png') }}" class="card-img">
+                                @php
+                                    $gambar = optional($item->gambar?->first())->gambar;
+                                @endphp
 
-                                        <div class="card-body">
+                                <img src="{{ $gambar
+                                    ? asset('uploads/' . ($item->type == 'wisata' ? 'wisata' : 'kuliner') . '/' . $gambar)
+                                    : asset('asset/images/background.png')
+                                }}" class="card-img">
 
-                                            <div class="d-flex justify-content-between">
-                                                <h6 class="title-card">{{ $item->nama_tempat }}</h6>
+                                <div class="card-body">
 
-                                                <span class="rating">
-                                                    <i class="bi bi-star-fill text-warning"></i> {{ $item->rating ?? '-' }}
-                                                </span>
-                                            </div>
+                                    <div class="d-flex justify-content-between">
 
-                                            <small class="location">
-                                                {{ $item->alamat }}
-                                            </small>
+                                        <h6 class="title-card">
+                                            {{ $item->nama_tempat }}
+                                        </h6>
 
-                                            <div class="d-flex justify-content-between mt-2">
-                                                <span class="price">
-                                                    Rp {{ number_format($item->harga, 0, ',', '.') }}/orang
-                                                </span>
+                                        <span class="rating">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            {{ $item->rating ?? '-' }}
+                                        </span>
 
-                                                <small class="category">
-                                                    {{ $item->kategori->nama_kategori ?? '-' }}
-                                                </small>
-                                            </div>
-
-                                        </div>
                                     </div>
 
-                                </a>
+                                    <small class="location">
+                                        {{ $item->alamat }}
+                                    </small>
+
+                                    <div class="d-flex justify-content-between mt-2">
+
+                                        <span class="price">
+
+                                            @if($isWisata)
+
+                                                Rp {{ number_format($item->htm_min_domestik ?? 0, 0, ',', '.') }}/orang
+
+                                            @else
+
+                                                Rp {{ number_format($item->htm_min ?? 0, 0, ',', '.') }}
+                                                - {{ number_format($item->htm_max ?? 0, 0, ',', '.') }}
+
+                                            @endif
+
+                                        </span>
+
+                                        <small class="category">
+
+                                            @if($isWisata)
+
+                                                {{ $item->kategori->nama_kategori ?? '-' }}
+
+                                            @else
+
+                                                Kuliner {{ $item->kategori->nama_kategori ?? '-' }}
+
+                                            @endif
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </div>
+
                     @empty
+
                         <p>Tidak ada hasil ditemukan</p>
+
                     @endforelse
+
                 </div>
 
             </div>

@@ -12,4 +12,14 @@ class KategoriWisata extends Model
     protected $fillable = [
         'nama_kategori'
     ];
+
+    public function preferences()
+    {
+        return $this->belongsToMany(
+            WisataPreference::class,
+            'wisata_preference_kategori',
+            'kategori_wisata_id',
+            'wisata_preference_id'
+        );
+    }
 }

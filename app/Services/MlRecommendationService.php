@@ -80,38 +80,52 @@ class MlRecommendationService
         return $result['data'] ?? null;
     }
 
-    public function recommendWisata(int $userId, ?string $kategori = null, ?int $budgetMin = null, ?int $budgetMax = null, ?float $ratingMin = null, int $topN = 5): ?array
+    public function recommendWisata(int $userId, ?array $kategori = null, ?int $budgetMin = null, ?int $budgetMax = null, ?float $ratingMin = null, int $topN = null): ?array
     {
         $data = [
             'user_id' => $userId,
-            'top_n' => $topN
         ];
 
-        if ($kategori) $data['kategori'] = $kategori;
-        if ($budgetMin !== null) $data['budget_min'] = $budgetMin;
-        if ($budgetMax !== null) $data['budget_max'] = $budgetMax;
-        if ($ratingMin !== null) $data['rating_min'] = $ratingMin;
+        if ($topN !== null) {
+            $data['top_n'] = $topN;
+        }
+
+        if ($kategori)
+            $data['kategori'] = $kategori;
+        if ($budgetMin !== null)
+            $data['budget_min'] = $budgetMin;
+        if ($budgetMax !== null)
+            $data['budget_max'] = $budgetMax;
+        if ($ratingMin !== null)
+            $data['rating_min'] = $ratingMin;
 
         $result = $this->post('/api/v1/wisata/recommend', $data);
 
-        return $result['data'] ?? null;
+        return $result['data'] ?? [];
     }
 
-    public function recommendKuliner(int $userId, ?string $kategori = null, ?int $budgetMin = null, ?int $budgetMax = null, ?float $ratingMin = null, int $topN = 5): ?array
+    public function recommendKuliner(int $userId, ?array $kategori = null, ?int $budgetMin = null, ?int $budgetMax = null, ?float $ratingMin = null, int $topN = null): ?array
     {
         $data = [
             'user_id' => $userId,
-            'top_n' => $topN
         ];
 
-        if ($kategori) $data['kategori'] = $kategori;
-        if ($budgetMin !== null) $data['budget_min'] = $budgetMin;
-        if ($budgetMax !== null) $data['budget_max'] = $budgetMax;
-        if ($ratingMin !== null) $data['rating_min'] = $ratingMin;
+        if ($topN !== null) {
+            $data['top_n'] = $topN;
+        }
+
+        if ($kategori)
+            $data['kategori'] = $kategori;
+        if ($budgetMin !== null)
+            $data['budget_min'] = $budgetMin;
+        if ($budgetMax !== null)
+            $data['budget_max'] = $budgetMax;
+        if ($ratingMin !== null)
+            $data['rating_min'] = $ratingMin;
 
         $result = $this->post('/api/v1/kuliner/recommend', $data);
 
-        return $result['data'] ?? null;
+        return $result['data'] ?? [];
     }
 
     public function rateWisata(int $wisataId, int $userId, float $rating): bool

@@ -14,4 +14,14 @@ class RatingWisata extends Model
         'wisata_id',
         'nilai_rating'
     ];
+
+    public function wisata()
+    {
+        return $this->belongsTo(Wisata::class, 'wisata_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

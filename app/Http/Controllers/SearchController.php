@@ -17,7 +17,7 @@ class SearchController extends Controller
         $rating = $request->rating;
         $sort = $request->sort;
 
-        $wisata = Wisata::with('kategori')
+        $wisata = Wisata::with(['kategori', 'gambar'])
             ->select('wisata.*')
             ->selectRaw("'wisata' as type")
             ->selectRaw('htm_min_domestik as harga')
@@ -29,7 +29,7 @@ class SearchController extends Controller
                     });
             });
 
-        $kuliner = Kuliner::with('kategori')
+        $kuliner = Kuliner::with(['kategori', 'gambar'])
             ->select('kuliner.*')
             ->selectRaw("'kuliner' as type")
             ->selectRaw('htm_min as harga')
@@ -43,19 +43,31 @@ class SearchController extends Controller
 
         // FILTER
         // WISATA
-        if ($min) {
+        if ($request->filled('min_harga')) {
             $wisata->where('htm_min_domestik', '>=', $min);
         }
-        if ($max) {
-            $wisata->where('htm_max_domestik', '<=', $max);
+
+        if ($request->filled('max_harga')) {
+            $wisata->where('htm_min_domestik', '<=', $max);
         }
 
         // KULINER
-        if ($min) {
+        if ($request->filled('min_harga')) {
             $kuliner->where('htm_min', '>=', $min);
         }
-        if ($max) {
-            $kuliner->where('htm_max', '<=', $max);
+
+        if ($request->filled('max_harga')) {
+            $kuliner->where('htm_min', '<=', $max);
+        }
+
+        // Wisata
+        if ($rating) {
+            $wisata->where('rating', '>=', $rating);
+        }
+
+        //Kuliner
+        if ($rating) {
+            $kuliner->where('rating', '>=', $rating);
         }
 
         // SORT DB
