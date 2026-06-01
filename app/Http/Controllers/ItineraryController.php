@@ -12,7 +12,7 @@ class ItineraryController extends Controller
     public function generate(Request $request)
     {
         $response = Http::post(
-            'http://127.0.0.1:8001/api/itinerary',
+            rtrim(env('ML_SERVICE_URL', 'http://127.0.0.1:8001'), '/') . '/api/itinerary',
             [
                 'wisata_ids' => $request->wisata_ids,
                 'kuliner_ids' => $request->kuliner_ids,
