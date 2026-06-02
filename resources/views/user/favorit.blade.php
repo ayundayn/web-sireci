@@ -5,7 +5,7 @@
     <div class="content-detail">
         <div class="container py-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div class="favorit-header mb-3">
 
                 <div class="d-flex align-items-center gap-4">
                     <!-- Tombol Back -->
@@ -17,7 +17,7 @@
                     <h4 class="mb-0 fw-bold">Favorit Saya</h4>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="action-buttons">
 
                     <!-- PILIH SEMUA -->
                     <button id="btn-pilih-semua" class="btn btn-outline-main">
@@ -33,104 +33,112 @@
 
             </div>
 
-            @foreach($favorit as $fav)
+            <div class="row g-3">
 
-                    @php
-                        $item = $fav['data'];
-                        $isWisata = $fav['type'] === 'wisata';
-                        $detailRoute = $isWisata
-                            ? route('detail.wisata', $item->wisata->wisata_id)
-                            : route('detail.kuliner', $item->kuliner->kuliner_id);
+                @foreach($favorit as $fav)
 
-                        $obj = $isWisata ? $item->wisata : $item->kuliner;
-                    @endphp
+                            @php
+                                $item = $fav['data'];
+                                $isWisata = $fav['type'] === 'wisata';
 
-                    <div class="card favorit-card mb-3 p-3 favorit-clickable"
-                        data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}" data-type="{{ $fav['type'] }}"
-                        onclick="window.location='{{ $detailRoute }}'">
+                                $detailRoute = $isWisata
+                                    ? route('detail.wisata', $item->wisata->wisata_id)
+                                    : route('detail.kuliner', $item->kuliner->kuliner_id);
 
-                        <div class="row align-items-center g-3">
+                                $obj = $isWisata ? $item->wisata : $item->kuliner;
+                            @endphp
 
-                            <!-- GAMBAR -->
-                            <div class="col-md-3 col-12">
-                                <img src="{{ asset(
-                                    ($isWisata ? 'uploads/wisata/' : 'uploads/kuliner/') .
-                                    (optional($obj->gambar->first())->gambar ?? 'background.png')
-                                ) }}" class="img-fluid rounded favorit-img w-100">
-                            </div>
+                            <div class="col-6 col-lg-12">
 
-                            <!-- INFO -->
-                            <div class="col-md-7 col-12">
+                                <div class="card favorit-card mb-3 p-3 favorit-clickable"
+                                    data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}" data-type="{{ $fav['type'] }}"
+                                    onclick="window.location='{{ $detailRoute }}'">
 
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="rating">
-                                        <i class="bi bi-star-fill"></i>
-                                        {{ $obj->rating ?? '-' }}
-                                    </span>
+                                    <div class="row align-items-center g-3">
 
-                                    <span>•</span>
+                                        <!-- GAMBAR -->
+                                        <div class="col-md-3 col-12">
 
-                                    <span class="category">
+                                            <img src="{{ asset(
+                                                ($isWisata ? 'uploads/wisata/' : 'uploads/kuliner/') .
+                                                (optional($obj->gambar->first())->gambar ?? 'background.png')
+                                            ) }}" class="img-fluid rounded favorit-img w-100">
 
-                                        @if($isWisata)
+                                        </div>
 
-                                            {{ $obj->kategori->nama_kategori ?? '-' }}
+                                        <!-- INFO -->
+                                        <div class="col-md-7 col-12">
 
-                                        @else
+                                            <div class="d-flex align-items-center gap-2 flex-wrap">
 
-                                            Kuliner {{ $obj->kategori->nama_kategori ?? '-' }}
+                                                <span class="rating">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    {{ $obj->rating ?? '-' }}
+                                                </span>
 
-                                        @endif
+                                                <span>•</span>
 
-                                    </span>
+                                                <span class="category">
+
+                                                    @if($isWisata)
+                                                        {{ $obj->kategori->nama_kategori ?? '-' }}
+                                                    @else
+                                                        Kuliner {{ $obj->kategori->nama_kategori ?? '-' }}
+                                                    @endif
+
+                                                </span>
+
+                                            </div>
+
+                                            <h5 class="mt-2">
+                                                {{ $obj->nama_tempat }}
+                                            </h5>
+
+                                            <p class="location mb-1">
+                                                {{ $obj->alamat }}
+                                            </p>
+
+                                            <span class="price">
+
+                                                @if($isWisata)
+
+                                                    Rp {{ number_format($obj->htm_min_domestik ?? 0, 0, ',', '.') }}/orang
+
+                                                @else
+
+                                                    Rp {{ number_format($obj->htm_min ?? 0, 0, ',', '.') }}
+                                                    - {{ number_format($obj->htm_max ?? 0, 0, ',', '.') }}
+
+                                                @endif
+
+                                            </span>
+
+                                        </div>
+
+                                        <!-- TOMBOL -->
+                                        <div class="col-md-2 col-12">
+
+                                            <button class="btn btn-outline-main mb-2 w-100 btn-pilih">
+                                                Pilih
+                                            </button>
+
+                                            <button class="btn btn-danger w-100 btn-hapus"
+                                                data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}"
+                                                data-type="{{ $fav['type'] }}">
+                                                Hapus
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
-                                <h5 class="mt-2">
-                                    {{ $obj->nama_tempat }}
-                                </h5>
-
-                                <p class="location mb-1">
-                                    {{ $obj->alamat }}
-                                </p>
-
-                                <span class="price">
-
-                                    @if($isWisata)
-
-                                        Rp {{ number_format($obj->htm_min_domestik ?? 0, 0, ',', '.') }}/orang
-
-                                    @else
-
-                                        Rp {{ number_format($obj->htm_min ?? 0, 0, ',', '.') }}
-                                        - {{ number_format($obj->htm_max ?? 0, 0, ',', '.') }}
-
-                                    @endif
-
-                                </span>
-
                             </div>
 
-                            <!-- TOMBOL -->
-                            <div class="col-md-2 col-12">
+                @endforeach
 
-                                <button class="btn btn-outline-main mb-2 w-100 btn-pilih">
-                                    Pilih
-                                </button>
-
-                                <button class="btn btn-danger w-100 btn-hapus"
-                                    data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}" data-type="{{ $fav['type'] }}">
-
-                                    Hapus
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-            @endforeach
+            </div>
 
             @if($favorit->isEmpty())
                 <div class="text-center py-5">

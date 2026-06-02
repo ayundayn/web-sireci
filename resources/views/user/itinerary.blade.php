@@ -16,19 +16,29 @@
 
         </div>
 
-        <div class="text-end mt-5">
+        <div class="budget-card mb-5">
 
-            <h4>
+            <div class="d-flex align-items-center gap-3">
 
-                Estimasi Budget:
+                <div class="budget-icon">
+                    <i class="bi bi-wallet2"></i>
+                </div>
 
-                <span class="fw-bold">
+                <div>
+                    <small class="d-block">
+                        Estimasi Total Budget
+                    </small>
 
-                    Rp{{ number_format($data['total_budget'], 0, ',', '.') }}
+                    <small class="">
+                        Untuk {{ count($data['itinerary']) }} hari perjalanan
+                    </small>
+                </div>
 
-                </span>
+            </div>
 
-            </h4>
+            <div class="budget-total">
+                Rp{{ number_format($data['total_budget'], 0, ',', '.') }}
+            </div>
 
         </div>
 
@@ -78,8 +88,9 @@
                                 </div>
 
                                 <img src="{{ !empty($item['gambar'])
-                                    ? asset('uploads/' . ($item['type'] === 'wisata' ? 'wisata/' : 'kuliner/') . $item['gambar'])
-                                    : asset('asset/images/background.png') }}" class="rounded" style="width:100px;height:80px;object-fit:cover;">
+                        ? asset('uploads/' . ($item['type'] === 'wisata' ? 'wisata/' : 'kuliner/') . $item['gambar'])
+                        : asset('asset/images/background.png') }}" class="rounded"
+                                    style="width:100px;height:80px;object-fit:cover;">
 
                             </div>
 

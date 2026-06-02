@@ -67,7 +67,7 @@
             <div class="col-md-9">
 
                 <!-- HEADER -->
-                <div class="d-flex align-items-center mb-3 gap-2">
+                <div class="d-flex align-items-center gap-4">
                     <a href="{{ url('/') }}" class="btn btn-light rounded-circle shadow-sm">
                         ←
                     </a>
@@ -174,7 +174,7 @@
 
                         @endphp
 
-                        <div class="col-md-6 mb-4">
+                        <div class="col-12 col-md-6 col-xl-4 mb-4">
 
                             <div class="card wisata-card search-clickable"
                                 onclick="window.location='{{ $detailRoute }}'"
@@ -258,6 +258,68 @@
             </div>
         </div>
     </div>
+
+    <div class="mobile-filter-bar d-md-none">
+        <button class="btn-filter-mobile" onclick="openFilter()">
+            <i class="bi bi-funnel"></i>
+            Filter
+        </button>
+    </div>
+
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-sheet">
+
+            <div class="filter-header">
+                <h6>Filter</h6>
+                <button onclick="closeFilter()">✕</button>
+            </div>
+
+            <div class="filter-body">
+
+                <form method="GET" action="{{ route('search') }}">
+
+                    <input type="hidden" name="q" value="{{ request('q') }}">
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+
+                    <p class="filter-subtitle">Rentang Harga</p>
+
+                    <div class="price-range">
+                        <input type="number" name="min_harga" value="{{ request('min_harga') }}" placeholder="MIN">
+                        <span>—</span>
+                        <input type="number" name="max_harga" value="{{ request('max_harga') }}" placeholder="MAX">
+                    </div>
+
+                    <hr>
+
+                    <p class="filter-subtitle">Penilaian</p>
+
+                    <div class="rating-filter">
+                        @for ($i = 5; $i >= 1; $i--)
+                            <label>
+                                <input type="radio" name="rating" value="{{ $i }}"
+                                    {{ request('rating') == $i ? 'checked' : '' }}>
+                                <span class="stars">
+                                    {{ str_repeat('★', $i) . str_repeat('☆', 5 - $i) }}
+                                </span>
+                            </label>
+                        @endfor
+                    </div>
+
+                    <div class="filter-button">
+                        <button type="submit" class="btn-apply">Terapkan</button>
+
+                        <a href="{{ route('search', ['q' => request('q')]) }}"
+                        class="btn-reset">
+                            Reset
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <script>
@@ -279,6 +341,33 @@ document.querySelectorAll('.dropdown-toggle').forEach(btn => {
 document.addEventListener("click", function () {
     document.querySelectorAll('.dropdown-menu-custom')
         .forEach(menu => menu.style.display = "none");
+});
+
+function openFilter(){
+    document.getElementById('filterModal').style.display = 'block';
+}
+
+function closeFilter(){
+    const modal = document.getElementById('filterModal');
+    const sheet = document.querySelector('.filter-sheet');
+
+    // trigger animasi turun
+    sheet.classList.add('closing');
+
+    setTimeout(() => {
+        modal.style.display = 'none';
+        sheet.classList.remove('closing');
+    }, 250); // sama dengan durasi animasi
+}
+
+// klik luar sheet
+document.addEventListener('click', function(e){
+    let modal = document.getElementById('filterModal');
+    let sheet = document.querySelector('.filter-sheet');
+
+    if(e.target === modal){
+        closeFilter();
+    }
 });
 </script>
 @endsection

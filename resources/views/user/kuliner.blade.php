@@ -18,7 +18,7 @@
             <div class="row g-4 mt-3">
 
                 @foreach($kuliner as $item)
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-md-4">
 
                             <a href="{{ route('detail.kuliner', $item->kuliner_id) }}" class="card-link">
 

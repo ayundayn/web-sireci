@@ -30,26 +30,7 @@
         </div>
     @endif
 
-    @if(Auth::check())
-
-        <div class="container py-4">
-
-            <div class="sticky-preferensi">
-
-                <button class="btn btn-main" onclick="openPopup()">
-
-                    <i class="bi bi-sliders me-1"></i>
-                    Preferensi
-
-                </button>
-
-            </div>
-
-        </div>
-
-    @endif
-
-    <div id="hasilRekomendasi" class="container mt-2" style="{{ Auth::check() ? '' : 'display:none;' }}">
+    <div id="hasilRekomendasi" class="container py-4" style="{{ Auth::check() ? '' : 'display:none;' }}">
 
         <!-- HEADER -->
         <div class="section-header">
@@ -243,8 +224,7 @@
                 <button type="button" class="popup-close" onclick="closePopup()">✕</button>
 
                 <h4 class="popup-title">
-                    Bantu kami menentukan <br>
-                    rekomendasi terbaik untuk Anda
+                    Pilih Preferensi Anda
                 </h4>
 
                 <!-- Kategori Wisata -->
@@ -295,6 +275,25 @@
 
         </div>
     </div>
+
+    @if(Auth::check())
+
+        <div class="container py-4">
+
+            <div class="sticky-preferensi">
+
+                <button class="btn btn-main" onclick="openPopup()">
+
+                    <i class="bi bi-sliders me-1"></i>
+                    Preferensi
+
+                </button>
+
+            </div>
+
+        </div>
+
+    @endif
 
     <script>
 
@@ -527,9 +526,9 @@
 
                 el.innerHTML += `
 
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+            <div class="col-6 col-md-4 mb-3">
 
-                <div class="scroll-card h-100">
+                <div class="h-100">
 
                     <a href="/wisata/${item.wisata_id}" class="card-link">
 
@@ -564,7 +563,7 @@
 
                                 </div>
 
-                                <small class="location d-block mt-2">
+                                <small class="location mb-1">
                                     ${item.alamat ?? '-'}
                                 </small>
 
@@ -606,9 +605,9 @@
 
                 el.innerHTML += `
 
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+            <div class="col-6 col-md-4 mb-3">
 
-                <div class="scroll-card h-100">
+                <div class="h-100">
 
                     <a href="/kuliner/${item.kuliner_id}" class="card-link">
 
@@ -643,7 +642,7 @@
 
                                 </div>
 
-                                <small class="location d-block mt-2">
+                                <small class="location mb-1">
                                     ${item.alamat ?? '-'}
                                 </small>
 

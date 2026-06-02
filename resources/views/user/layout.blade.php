@@ -86,38 +86,31 @@
 </head>
 
 <body>
-
-
     <nav class="navbar custom-navbar">
         <div class="container navbar-wrapper">
 
-            <!-- LEFT -->
-            <div class="left-section">
-                <div class="logo">
-                    <a href="{{ url('/') }}" style="text-decoration: none;">
-                        <span class="brand-main">SI</span><span class="brand-sub">RECI</span>
-                    </a>
-                </div>
-
-                <div class="sub-menu">
-                    <a href="{{ route('favorit') }}" class="{{ request()->routeIs('favorit') ? 'active-menu' : '' }}">
-
-                        Favorit
-
-                    </a>
-                </div>
+            <div class="logo">
+                <a href="{{ url('/') }}">
+                    <span class="brand-main">SI</span><span class="brand-sub">RECI</span>
+                </a>
             </div>
 
-            <!-- SEARCH -->
             <div class="search-center">
-                <form action="{{ route('search') }}" method="GET">
-                    <input type="text" name="q" class="search-input" placeholder="Cari..." value="{{ request('q') }}">
+                <form action="{{ route('search') }}" method="GET" id="searchForm">
+                    <div class="search-wrapper">
+
+                        <input type="text" name="q" class="search-input" id="searchInput" placeholder="Cari..."
+                            value="{{ request('q') }}">
+
+                        <button type="button" id="searchBtn" class="search-icon">
+                            <i class="bi bi-search"></i>
+                        </button>
+
+                    </div>
                 </form>
             </div>
 
-            <!-- RIGHT -->
             <div class="right-section">
-
                 @auth
                     <div class="dropdown">
 
@@ -159,10 +152,22 @@
                             </li>
 
                             <li>
+                                <a href="{{ route('favorit') }}" class="dropdown-item favorit-btn">
+                                    <i class="bi bi-heart-fill favorit-icon me-2 favorit-icon"></i>
+                                    Favorit
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
 
                                     <button type="submit" class="dropdown-item logout-btn">
+                                        <i class="bi bi-box-arrow-right me-2 logout-icon"></i>
                                         Logout
                                     </button>
                                 </form>
@@ -176,7 +181,6 @@
                         Masuk
                     </button>
                 @endauth
-
             </div>
 
         </div>
@@ -272,6 +276,45 @@
                 closeLoginModal();
             }
         });
+
+        const input = document.getElementById('searchInput');
+        const btn = document.getElementById('searchBtn');
+        const form = document.getElementById('searchForm');
+
+        function updateIcon() {
+            if (input.value.trim().length > 0) {
+                btn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            } else {
+                btn.innerHTML = '<i class="bi bi-search"></i>';
+            }
+        }
+
+        // klik icon
+        btn.addEventListener('click', function () {
+
+            if (input.value.trim().length > 0) {
+                // kalau ada isi → clear
+                input.value = '';
+                updateIcon();
+                input.focus();
+            } else {
+                // kalau kosong → submit
+                form.submit();
+            }
+        });
+
+        // enter tetap search
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                form.submit();
+            }
+        });
+
+        // realtime update icon
+        input.addEventListener('input', updateIcon);
+
+        // initial state (kalau ada request('q'))
+        updateIcon();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
