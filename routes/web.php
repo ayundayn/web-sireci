@@ -54,6 +54,11 @@ Route::post(
     [ItineraryController::class, 'generate']
 )->name('itinerary.generate');
 
+Route::post(
+    '/generate-itenary',
+    [ItineraryController::class, 'generate']
+);
+
 Route::get(
     '/itinerary-page',
     [ItineraryController::class, 'page']

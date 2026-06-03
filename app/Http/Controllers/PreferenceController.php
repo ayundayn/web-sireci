@@ -9,6 +9,8 @@ use App\Models\WisataPreference;
 use App\Models\KulinerPreference;
 use App\Models\KategoriWisata;
 use App\Models\KategoriKuliner;
+use App\Models\Wisata;
+use App\Models\Kuliner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +33,14 @@ class PreferenceController extends Controller
             'rating_min' => 'nullable|integer|min:1|max:5',
         ]);
 
+        Session::put('user_preferences', [
+            'kategori_wisata' => $data['kategori_wisata'] ?? [],
+            'kategori_kuliner' => $data['kategori_kuliner'] ?? [],
+            'budget_min' => $data['budget_min'] ?? null,
+            'budget_max' => $data['budget_max'] ?? null,
+            'rating_min' => $data['rating_min'] ?? null,
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -43,20 +53,18 @@ class PreferenceController extends Controller
             $wisataPref = WisataPreference::updateOrCreate(
                 ['user_id' => $userId], // kunci unik
                 [
-                    'budget_min' => $data['budget_min'],
-                    'budget_max' => $data['budget_max'],
-                    'rating_min' => $data['rating_min'],
+                    'budget_min' => $data['budget_min'] ?? null,
+                    'budget_max' => $data['budget_max'] ?? null,
+                    'rating_min' => $data['rating_min'] ?? null,
                 ]
             );
 
-            if (!empty($data['kategori_wisata'])) {
-                $kategoriWisataIds = KategoriWisata::whereIn(
-                    'nama_kategori',
-                    $data['kategori_wisata']
-                )->pluck('kategori_wisata_id')->toArray();
+            $kategoriWisataIds = KategoriWisata::whereIn(
+                'nama_kategori',
+                $data['kategori_wisata'] ?? []
+            )->pluck('kategori_wisata_id')->toArray();
 
-                $wisataPref->kategori()->sync($kategoriWisataIds);
-            }
+            $wisataPref->kategori()->sync($kategoriWisataIds);
 
             // =====================
             // KULINER PREFERENCE
@@ -64,20 +72,18 @@ class PreferenceController extends Controller
             $kulinerPref = KulinerPreference::updateOrCreate(
                 ['user_id' => $userId],
                 [
-                    'budget_min' => $data['budget_min'],
-                    'budget_max' => $data['budget_max'],
-                    'rating_min' => $data['rating_min'],
+                    'budget_min' => $data['budget_min'] ?? null,
+                    'budget_max' => $data['budget_max'] ?? null,
+                    'rating_min' => $data['rating_min'] ?? null,
                 ]
             );
 
-            if (!empty($data['kategori_kuliner'])) {
-                $kategoriKulinerIds = KategoriKuliner::whereIn(
-                    'nama_kategori',
-                    $data['kategori_kuliner']
-                )->pluck('kategori_kuliner_id')->toArray();
+            $kategoriKulinerIds = KategoriKuliner::whereIn(
+                'nama_kategori',
+                $data['kategori_kuliner'] ?? []
+            )->pluck('kategori_kuliner_id')->toArray();
 
-                $kulinerPref->kategori()->attach($kategoriKulinerIds);
-            }
+            $kulinerPref->kategori()->sync($kategoriKulinerIds);
 
             DB::commit();
 
@@ -87,18 +93,26 @@ class PreferenceController extends Controller
             $wisata = $this->mlService->recommendWisata(
                 $userId,
                 $data['kategori_wisata'] ?? [],
-                $data['budget_min'],
-                $data['budget_max'],
-                $data['rating_min'],
+                $data['budget_min'] ?? null,
+                $data['budget_max'] ?? null,
+                $data['rating_min'] ?? null,
             );
 
             $kuliner = $this->mlService->recommendKuliner(
                 $userId,
                 $data['kategori_kuliner'] ?? [],
-                $data['budget_min'],
-                $data['budget_max'],
-                $data['rating_min'],
+                $data['budget_min'] ?? null,
+                $data['budget_max'] ?? null,
+                $data['rating_min'] ?? null,
             );
+
+            if (empty($wisata)) {
+                $wisata = $this->fallbackWisataRecommendations($data);
+            }
+
+            if (empty($kuliner)) {
+                $kuliner = $this->fallbackKulinerRecommendations($data);
+            }
 
             $wisata = collect($wisata)->map(function ($item) {
 
@@ -135,6 +149,107 @@ class PreferenceController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function fallbackWisataRecommendations(array $data): array
+    {
+        $query = Wisata::with(['kategori', 'gambar']);
+
+        if (!empty($data['kategori_wisata'])) {
+            $query->whereHas('kategori', function ($query) use ($data) {
+                $query->whereIn('nama_kategori', $data['kategori_wisata']);
+            });
+        }
+
+        if (($data['budget_min'] ?? null) !== null) {
+            $query->where('htm_max_domestik', '>=', $data['budget_min']);
+        }
+
+        if (($data['budget_max'] ?? null) !== null) {
+            $query->where('htm_min_domestik', '<=', $data['budget_max']);
+        }
+
+        if (($data['rating_min'] ?? null) !== null) {
+            $query->where('rating', '>=', $data['rating_min']);
+        }
+
+        $items = $query->orderByDesc('rating')->take(10)->get();
+
+        if ($items->isEmpty()) {
+            $items = Wisata::with(['kategori', 'gambar'])
+                ->orderByDesc('rating')
+                ->take(10)
+                ->get();
+        }
+
+        return $items->map(function (Wisata $item) {
+            return [
+                'wisata_id' => $item->wisata_id,
+                'nama_tempat' => $item->nama_tempat,
+                'kategori' => $item->kategori->nama_kategori ?? '-',
+                'jam_buka' => (string) $item->jam_buka,
+                'jam_tutup' => (string) $item->jam_tutup,
+                'alamat' => $item->alamat,
+                'lokasi_geo' => $item->lokasi_geo,
+                'htm_min_domestik' => (float) $item->htm_min_domestik,
+                'htm_max_domestik' => (float) $item->htm_max_domestik,
+                'htm_min_mancanegara' => (float) $item->htm_min_mancanegara,
+                'htm_max_mancanegara' => (float) $item->htm_max_mancanegara,
+                'akses_transportasi' => $item->akses_transportasi,
+                'rating' => (float) $item->rating,
+                'skor_rekomendasi' => (float) (($item->rating ?: 0) / 5),
+                'gambar' => $item->gambar_utama,
+            ];
+        })->values()->all();
+    }
+
+    private function fallbackKulinerRecommendations(array $data): array
+    {
+        $query = Kuliner::with(['kategori', 'gambar']);
+
+        if (!empty($data['kategori_kuliner'])) {
+            $query->whereHas('kategori', function ($query) use ($data) {
+                $query->whereIn('nama_kategori', $data['kategori_kuliner']);
+            });
+        }
+
+        if (($data['budget_min'] ?? null) !== null) {
+            $query->where('htm_max', '>=', $data['budget_min']);
+        }
+
+        if (($data['budget_max'] ?? null) !== null) {
+            $query->where('htm_min', '<=', $data['budget_max']);
+        }
+
+        if (($data['rating_min'] ?? null) !== null) {
+            $query->where('rating', '>=', $data['rating_min']);
+        }
+
+        $items = $query->orderByDesc('rating')->take(10)->get();
+
+        if ($items->isEmpty()) {
+            $items = Kuliner::with(['kategori', 'gambar'])
+                ->orderByDesc('rating')
+                ->take(10)
+                ->get();
+        }
+
+        return $items->map(function (Kuliner $item) {
+            return [
+                'kuliner_id' => $item->kuliner_id,
+                'nama_tempat' => $item->nama_tempat,
+                'kategori' => $item->kategori->nama_kategori ?? '-',
+                'jam_buka' => (string) $item->jam_buka,
+                'jam_tutup' => (string) $item->jam_tutup,
+                'alamat' => $item->alamat,
+                'lokasi_geo' => $item->lokasi_geo,
+                'htm_min' => (float) $item->htm_min,
+                'htm_max' => (float) $item->htm_max,
+                'rating' => (float) $item->rating,
+                'skor_rekomendasi' => (float) (($item->rating ?: 0) / 5),
+                'gambar' => $item->gambar_utama,
+            ];
+        })->values()->all();
     }
 
     public function clear()

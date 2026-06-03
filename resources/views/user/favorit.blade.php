@@ -473,6 +473,10 @@
 
                         const data = await response.json();
 
+                        if (!response.ok || !data.success || !data.data) {
+                            throw new Error(data.message || 'Gagal membuat itinerary');
+                        }
+
                         modalHari.hide();
 
                         window.location.href =
