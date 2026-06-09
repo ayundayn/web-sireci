@@ -33,6 +33,8 @@ class UatController extends Controller
 
             'frekuensi_digital' => $request->frekuensi_digital,
 
+            'sumber_informasi' => $request->sumber_informasi,
+
             'q1' => $request->q1,
             'q2' => $request->q2,
             'q3' => $request->q3,
@@ -57,6 +59,8 @@ class UatController extends Controller
             'q21' => $request->q21,
             'q22' => $request->q22,
             'q23' => $request->q23,
+
+            'saran_pengguna' => $request->saran_pengguna,
         ]);
 
         $redirectUrl = session('uat_redirect', route('favorit'));

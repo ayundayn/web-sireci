@@ -16,28 +16,47 @@
 
         </div>
 
-        <div class="budget-card mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
 
-            <div class="d-flex align-items-center gap-3">
+            <div class="budget-card mb-0 flex-grow-1">
 
-                <div class="budget-icon">
-                    <i class="bi bi-wallet2"></i>
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="budget-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div>
+                        <small class="d-block">
+                            Estimasi Total Budget
+                        </small>
+
+                        <small>
+                            Untuk {{ count($data['itinerary']) }} hari perjalanan
+                        </small>
+                    </div>
+
                 </div>
 
-                <div>
-                    <small class="d-block">
-                        Estimasi Total Budget
-                    </small>
-
-                    <small class="">
-                        Untuk {{ count($data['itinerary']) }} hari perjalanan
-                    </small>
+                <div class="budget-total">
+                    Rp{{ number_format($data['total_budget'], 0, ',', '.') }}
                 </div>
 
             </div>
 
-            <div class="budget-total">
-                Rp{{ number_format($data['total_budget'], 0, ',', '.') }}
+            <div class="budget-action">
+
+                <form action="{{ route('itinerary.pdf') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="data" value="{{ json_encode($data) }}">
+
+                    <button type="submit" class="pdf-card">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <span>Export PDF</span>
+                    </button>
+                </form>
+
             </div>
 
         </div>

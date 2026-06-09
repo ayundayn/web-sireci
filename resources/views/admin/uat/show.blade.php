@@ -74,16 +74,28 @@
 
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
 
                 <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
                     <p class="text-sm text-gray-500 mb-2">
                         Nama User
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg">
+                    <h4 class="font-bold text-gray-800">
                         {{ $data->user->name ?? '-' }}
                     </h4>
+                </div>
+
+                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+
+                    <p class="text-sm text-gray-500 mb-2">
+                        Email
+                    </p>
+
+                    <h4 class="font-bold text-gray-800 break-all">
+                        {{ $data->user->email ?? '-' }}
+                    </h4>
+
                 </div>
 
                 <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
@@ -91,7 +103,7 @@
                         Jenis Kelamin
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg">
+                    <h4 class="font-bold text-gray-800">
                         {{ $data->jenis_kelamin }}
                     </h4>
                 </div>
@@ -101,7 +113,7 @@
                         Usia
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg">
+                    <h4 class="font-bold text-gray-800">
                         {{ $data->usia }}
                     </h4>
                 </div>
@@ -111,8 +123,18 @@
                         Pekerjaan
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg">
-                        {{ $data->pekerjaan }}
+                    <h4 class="font-bold text-gray-800">
+
+                        @if($data->pekerjaan == 'Lainnya')
+
+                            {{ $data->pekerjaan_lainnya }}
+
+                        @else
+
+                            {{ $data->pekerjaan }}
+
+                        @endif
+
                     </h4>
                 </div>
 
@@ -121,7 +143,7 @@
                         Asal Daerah
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg">
+                    <h4 class="font-bold text-gray-800">
                         {{ $data->asal_daerah }}
                     </h4>
                 </div>
@@ -131,9 +153,21 @@
                         Frekuensi Penggunaan
                     </p>
 
-                    <h4 class="font-bold text-gray-800 text-lg leading-relaxed">
+                    <h4 class="font-bold text-gray-800 leading-relaxed">
                         {{ $data->frekuensi_digital }}
                     </h4>
+                </div>
+
+                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 md:col-span-2 xl:col-span-3">
+
+                    <p class="text-sm text-gray-500 mb-2">
+                        Sumber Informasi SIRECI
+                    </p>
+
+                    <p class="font-bold text-gray-800 leading-relaxed">
+                        {{ $data->sumber_informasi ?? '-' }}
+                    </p>
+
                 </div>
 
             </div>
@@ -374,17 +408,17 @@
                         <div>
 
                             <span class="
-                        w-14 h-14 rounded-2xl flex items-center justify-center
-                        text-lg font-bold shadow-sm
+                                                        w-14 h-14 rounded-2xl flex items-center justify-center
+                                                        text-lg font-bold shadow-sm
 
-                        @if($data['q' . $index] >= 4)
-                            bg-green-100 text-green-700
-                        @elseif($data['q' . $index] == 3)
-                            bg-yellow-100 text-yellow-700
-                        @else
-                            bg-red-100 text-red-700
-                        @endif
-                        ">
+                                                        @if($data['q' . $index] >= 4)
+                                                            bg-green-100 text-green-700
+                                                        @elseif($data['q' . $index] == 3)
+                                                            bg-yellow-100 text-yellow-700
+                                                        @else
+                                                            bg-red-100 text-red-700
+                                                        @endif
+                                                        ">
 
                                 {{ $data['q' . $index] }}
 
@@ -397,6 +431,49 @@
                 @endforeach
 
             </div>
+
+        </div>
+
+    </div>
+
+    <!-- SARAN PENGGUNA -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mt-8">
+
+        <div class="flex items-center gap-3 mb-6">
+
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h8M8 14h5m-7 7h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+                </svg>
+
+            </div>
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Saran dan Masukan Pengguna
+                </h2>
+
+                <p class="text-gray-500 text-sm">
+                    Kritik, saran, dan masukan untuk pengembangan SIRECI
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="bg-amber-50 border border-amber-100 rounded-2xl p-6">
+
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+
+                {{ $data->saran_pengguna ?? '-' }}
+
+            </p>
 
         </div>
 

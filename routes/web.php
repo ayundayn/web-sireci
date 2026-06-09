@@ -59,6 +59,11 @@ Route::get(
     [ItineraryController::class, 'page']
 )->name('itinerary.page');
 
+Route::post(
+    '/itinerary/export-pdf',
+    [ItineraryController::class, 'exportPdf']
+)->name('itinerary.pdf');
+
 Route::get('/uat', [UatController::class, 'index'])
     ->name('uat.index');
 

@@ -32,10 +32,10 @@
                 </div>
 
                 <!-- FAVORIT -->
-                <button class="btn btn-outline-main btn-favorit {{ $isFavorit ? 'active' : '' }}"
-                    data-id="{{ $data->kuliner_id }}" data-type="{{ $type }}">
+                <button class="btn-favorit {{ $isFavorit ? 'active' : '' }}" data-id="{{ $data->kuliner_id }}"
+                    data-type="{{ $type }}">
 
-                    {{ $isFavorit ? '❤ Tersimpan' : '❤ Simpan' }}
+                    <i class="bi {{ $isFavorit ? 'bi-heart-fill' : 'bi-heart' }}"></i>
 
                 </button>
 
@@ -246,14 +246,14 @@
 
                             if (!data) return;
 
-                            if (data.status === 'added') {
+                            if(data.status === 'added') {
 
-                                this.innerHTML = "❤ Tersimpan";
+                                this.innerHTML = '<i class="bi bi-heart-fill"></i>';
                                 this.classList.add('active');
 
                             } else {
 
-                                this.innerHTML = "❤ Simpan";
+                                this.innerHTML = '<i class="bi bi-heart"></i>';
                                 this.classList.remove('active');
                             }
 
