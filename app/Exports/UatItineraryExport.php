@@ -14,11 +14,20 @@ class UatItineraryExport implements FromCollection, WithHeadings
 
             return [
                 'Nama User' => $item->user->name ?? '-',
+                'Email' => $item->user->email ?? '-',
+
                 'Jenis Kelamin' => $item->jenis_kelamin,
                 'Usia' => $item->usia,
+
                 'Pekerjaan' => $item->pekerjaan,
+
+                'Pekerjaan Lainnya' => $item->pekerjaan_lainnya,
+
                 'Asal Daerah' => $item->asal_daerah,
+
                 'Frekuensi Digital' => $item->frekuensi_digital,
+
+                'Sumber Informasi SIRECI' => $item->sumber_informasi,
 
                 'Q1' => $item->q9,
                 'Q2' => $item->q10,
@@ -36,6 +45,8 @@ class UatItineraryExport implements FromCollection, WithHeadings
                 'Q14' => $item->q22,
                 'Q15' => $item->q23,
 
+                'Saran_Pengguna' => $item->saran_pengguna,
+
                 'Tanggal' => $item->created_at->format('d-m-Y H:i')
             ];
         });
@@ -45,11 +56,19 @@ class UatItineraryExport implements FromCollection, WithHeadings
     {
         return [
             'Nama User',
+            'Email',
+
             'Jenis Kelamin',
             'Usia',
+
             'Pekerjaan',
+            'Pekerjaan Lainnya',
+
             'Asal Daerah',
+
             'Frekuensi Digital',
+
+            'Sumber Informasi SIRECI',
 
             'Q1',
             'Q2',
@@ -66,6 +85,8 @@ class UatItineraryExport implements FromCollection, WithHeadings
             'Q13',
             'Q14',
             'Q15',
+
+            'Saran_Pengguna',
 
             'Tanggal'
         ];

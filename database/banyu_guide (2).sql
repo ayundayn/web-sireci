@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 01 Jun 2026 pada 06.08
+-- Waktu pembuatan: 09 Jun 2026 pada 15.04
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 8.2.0
 
@@ -117,7 +117,8 @@ INSERT INTO `favorit_kuliner` (`favorit_id`, `user_id`, `kuliner_id`, `created_a
 (35, 11, 144, NULL, NULL),
 (36, 12, 54, NULL, NULL),
 (37, 12, 60, NULL, NULL),
-(38, 12, 69, NULL, NULL);
+(38, 12, 69, NULL, NULL),
+(39, 3, 90, '2026-06-08 14:39:48', '2026-06-08 14:39:48');
 
 -- --------------------------------------------------------
 
@@ -176,7 +177,9 @@ INSERT INTO `favorit_wisata` (`favorit_id`, `user_id`, `wisata_id`, `created_at`
 (45, 11, 57, NULL, NULL),
 (46, 12, 71, NULL, NULL),
 (47, 12, 76, NULL, NULL),
-(48, 12, 79, NULL, NULL);
+(48, 12, 79, NULL, NULL),
+(50, 3, 34, '2026-06-01 00:37:47', '2026-06-01 00:37:47'),
+(59, 3, 79, '2026-06-08 05:27:08', '2026-06-08 05:27:08');
 
 -- --------------------------------------------------------
 
@@ -2467,7 +2470,7 @@ CREATE TABLE `kuliner_preference` (
 --
 
 INSERT INTO `kuliner_preference` (`id`, `user_id`, `budget_min`, `budget_max`, `rating_min`, `created_at`, `updated_at`, `guest_id`) VALUES
-(109, 3, 0, 1000000, 3, '2026-05-31 01:06:56', '2026-05-31 07:53:45', NULL),
+(109, 3, 0, 499988, 3, '2026-05-31 01:06:56', '2026-06-02 00:27:49', NULL),
 (110, NULL, 0, 200000, 3, '2026-05-31 02:27:57', '2026-05-31 02:27:57', NULL),
 (111, NULL, 0, 200000, 3, '2026-05-31 02:38:01', '2026-05-31 02:38:01', NULL),
 (112, NULL, 0, 200000, 3, '2026-05-31 02:51:40', '2026-05-31 02:51:40', NULL),
@@ -2475,7 +2478,8 @@ INSERT INTO `kuliner_preference` (`id`, `user_id`, `budget_min`, `budget_max`, `
 (114, NULL, 0, 200000, 3, '2026-05-31 03:21:22', '2026-05-31 03:21:22', NULL),
 (115, NULL, 0, 200000, 3, '2026-05-31 03:27:58', '2026-05-31 03:27:58', NULL),
 (116, NULL, 0, 200000, 3, '2026-05-31 03:28:05', '2026-05-31 03:28:05', NULL),
-(117, NULL, 0, 200000, 3, '2026-05-31 03:28:11', '2026-05-31 03:28:11', NULL);
+(117, NULL, 0, 200000, 3, '2026-05-31 03:28:11', '2026-05-31 03:28:11', NULL),
+(118, 1, 0, 500000, 3, '2026-06-01 07:02:25', '2026-06-01 07:09:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -2540,7 +2544,23 @@ INSERT INTO `kuliner_preference_kategori` (`id`, `kuliner_preference_id`, `kateg
 (246, 109, 5),
 (247, 109, 9),
 (248, 109, 8),
-(249, 109, 9);
+(249, 109, 9),
+(250, 109, 5),
+(251, 109, 8),
+(252, 118, 5),
+(253, 118, 5),
+(254, 118, 5),
+(255, 118, 5),
+(256, 109, 5),
+(257, 109, 8),
+(258, 109, 5),
+(259, 109, 8),
+(260, 109, 5),
+(261, 109, 8),
+(262, 109, 5),
+(263, 109, 8),
+(264, 109, 5),
+(265, 109, 8);
 
 -- --------------------------------------------------------
 
@@ -2586,7 +2606,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (25, '2026_05_30_123542_drop_gambar_column_from_kuliner_table', 18),
 (26, '2026_05_31_080129_add_unique_user_id_to_wisata_preferences_table', 19),
 (27, '2026_05_31_080255_add_unique_user_id_to_kuliner_preferences_table', 19),
-(28, '2026_05_31_091804_add_guest_id_to_preferences', 20);
+(28, '2026_05_31_091804_add_guest_id_to_preferences', 20),
+(29, '2026_06_08_204009_add_question_to_uat_answers_table', 21);
 
 -- --------------------------------------------------------
 
@@ -2721,7 +2742,8 @@ INSERT INTO `rating_wisata` (`rating_wisata_id`, `user_id`, `wisata_id`, `nilai_
 (78, 12, 71, '5.0', NULL, NULL),
 (79, 12, 76, '4.0', NULL, NULL),
 (80, 12, 79, '5.0', NULL, NULL),
-(81, 12, 82, '4.0', NULL, NULL);
+(81, 12, 82, '4.0', NULL, NULL),
+(82, 3, 34, '5.0', '2026-06-01 00:34:13', '2026-06-01 00:34:13');
 
 -- --------------------------------------------------------
 
@@ -2743,7 +2765,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('9TdzWNFUcrcEtuvOfLh5uzHn9PJnr5HPY8RMErsH', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieXhpOE1VTnJQdXNoZUVtcFllMkRLaW81TFh3ZE8wWmxyb1NxS1VSOSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo3OiJiZXJhbmRhIjt9fQ==', 1780241940);
+('Apnl7SAaYNSKdFjHwT2ri6SUG6nfUmhRkyJTh5oE', NULL, '127.0.0.1', 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidjZJU1Z2Q2QyUXR0cWFpYUdseUZiQkhEU2VPWm52Wm5iNEVHWEFyViI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zZWFyY2g/cT1hbGFtIjtzOjU6InJvdXRlIjtzOjY6InNlYXJjaCI7fX0=', 1780934440);
 
 -- --------------------------------------------------------
 
@@ -2784,8 +2806,17 @@ CREATE TABLE `uat_answers` (
   `pekerjaan` varchar(255) DEFAULT NULL,
   `pekerjaan_lainnya` varchar(255) DEFAULT NULL,
   `asal_daerah` varchar(255) DEFAULT NULL,
-  `frekuensi_digital` varchar(255) DEFAULT NULL
+  `frekuensi_digital` varchar(255) DEFAULT NULL,
+  `sumber_informasi` text DEFAULT NULL,
+  `saran_pengguna` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `uat_answers`
+--
+
+INSERT INTO `uat_answers` (`id`, `user_id`, `q1`, `q2`, `q3`, `q4`, `q5`, `q6`, `q7`, `q8`, `q9`, `q10`, `q11`, `q12`, `q13`, `q14`, `q15`, `q16`, `q17`, `q18`, `q19`, `q20`, `q21`, `q22`, `q23`, `created_at`, `updated_at`, `jenis_kelamin`, `usia`, `pekerjaan`, `pekerjaan_lainnya`, `asal_daerah`, `frekuensi_digital`, `sumber_informasi`, `saran_pengguna`) VALUES
+(4, 3, 'Ya', 'Ya', 'Ya', 'Ya', 'Ya', 'Ya', 'Ya', 'Ya', 4, 4, 4, 4, 4, 4, 4, 5, 4, 5, 4, 5, 5, 4, 5, '2026-06-08 14:35:27', '2026-06-08 14:35:27', 'Perempuan', '17–25 tahun', 'Pegawai Negeri', NULL, 'Luar Banyuwangi', '1–2 kali', 'medsos', 'no');
 
 -- --------------------------------------------------------
 
@@ -2813,7 +2844,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`, `google_id`, `avatar`) VALUES
 (1, 'Admin', 'admin@gmail.com', NULL, '$2y$12$krLxe5T00tSJRhrkyRLB8ugVj4SH3ShKYudnHIzcThsOUdC63tLmW', 'admin', NULL, '2026-03-15 18:58:02', '2026-03-15 18:58:02', NULL, NULL),
-(3, 'ayunda yn', 'yecantikaa@gmail.com', NULL, '$2y$12$K4Zt0SmqPeyDM5SDXK78U.LLrDB7q/yqEjdo3LZbTk1XEWMO9wjaa', 'user', NULL, '2026-05-06 06:18:35', '2026-05-31 06:28:12', NULL, NULL),
+(3, 'ayunda yn', 'yecantikaa@gmail.com', NULL, '$2y$12$DLmKLWAUFaKdvpoJjflO1u6SnUiUWd1FZGPpOx2Estef55gcE/xTC', 'user', NULL, '2026-05-06 06:18:35', '2026-06-08 05:19:30', NULL, NULL),
 (4, 'Ayunda Yecantika Nurliyanti', 'yesayesi1303@gmail.com', NULL, '$2y$12$4h1krMEyodiuAnW/vWbBh.sB0oik9mw1mehFzXl6PTO.X/.GWJEK2', 'user', NULL, '2026-05-07 22:21:05', '2026-05-24 09:36:45', NULL, NULL),
 (5, 'User5', 'user5@gmail.com', NULL, 'dummy', 'user', NULL, NULL, NULL, NULL, NULL),
 (6, 'User6', 'user6@gmail.com', NULL, 'dummy', 'user', NULL, NULL, NULL, NULL, NULL),
@@ -3666,7 +3697,7 @@ CREATE TABLE `wisata_preference` (
 --
 
 INSERT INTO `wisata_preference` (`id`, `user_id`, `budget_min`, `budget_max`, `rating_min`, `created_at`, `updated_at`, `guest_id`) VALUES
-(113, 3, 0, 1000000, 3, '2026-05-31 01:06:56', '2026-05-31 07:53:45', NULL),
+(113, 3, 0, 499988, 3, '2026-05-31 01:06:56', '2026-06-02 00:27:49', NULL),
 (114, NULL, 0, 200000, 3, '2026-05-31 02:27:57', '2026-05-31 02:27:57', NULL),
 (115, NULL, 0, 200000, 3, '2026-05-31 02:38:01', '2026-05-31 02:38:01', NULL),
 (116, NULL, 0, 200000, 3, '2026-05-31 02:51:40', '2026-05-31 02:51:40', NULL),
@@ -3674,7 +3705,8 @@ INSERT INTO `wisata_preference` (`id`, `user_id`, `budget_min`, `budget_max`, `r
 (118, NULL, 0, 200000, 3, '2026-05-31 03:21:22', '2026-05-31 03:21:22', NULL),
 (119, NULL, 0, 200000, 3, '2026-05-31 03:27:58', '2026-05-31 03:27:58', NULL),
 (120, NULL, 0, 200000, 3, '2026-05-31 03:28:05', '2026-05-31 03:28:05', NULL),
-(121, NULL, 0, 200000, 3, '2026-05-31 03:28:11', '2026-05-31 03:28:11', NULL);
+(121, NULL, 0, 200000, 3, '2026-05-31 03:28:11', '2026-05-31 03:28:11', NULL),
+(122, 1, 0, 500000, 3, '2026-06-01 07:02:24', '2026-06-01 07:09:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -3709,9 +3741,11 @@ INSERT INTO `wisata_preference_kategori` (`id`, `wisata_preference_id`, `kategor
 (258, 120, 15),
 (259, 121, 14),
 (260, 121, 15),
-(273, 113, 16),
-(275, 113, 14),
-(276, 113, 17);
+(279, 122, 14),
+(281, 122, 16),
+(282, 113, 14),
+(284, 113, 15),
+(286, 113, 16);
 
 --
 -- Indexes for dumped tables
@@ -3905,13 +3939,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT untuk tabel `favorit_kuliner`
 --
 ALTER TABLE `favorit_kuliner`
-  MODIFY `favorit_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `favorit_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT untuk tabel `favorit_wisata`
 --
 ALTER TABLE `favorit_wisata`
-  MODIFY `favorit_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `favorit_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT untuk tabel `jobs`
@@ -3947,19 +3981,19 @@ ALTER TABLE `kuliner_gambar`
 -- AUTO_INCREMENT untuk tabel `kuliner_preference`
 --
 ALTER TABLE `kuliner_preference`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT untuk tabel `kuliner_preference_kategori`
 --
 ALTER TABLE `kuliner_preference_kategori`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=266;
 
 --
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT untuk tabel `rating_kuliner`
@@ -3971,13 +4005,13 @@ ALTER TABLE `rating_kuliner`
 -- AUTO_INCREMENT untuk tabel `rating_wisata`
 --
 ALTER TABLE `rating_wisata`
-  MODIFY `rating_wisata_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `rating_wisata_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT untuk tabel `uat_answers`
 --
 ALTER TABLE `uat_answers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
@@ -4001,13 +4035,13 @@ ALTER TABLE `wisata_gambar`
 -- AUTO_INCREMENT untuk tabel `wisata_preference`
 --
 ALTER TABLE `wisata_preference`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
 
 --
 -- AUTO_INCREMENT untuk tabel `wisata_preference_kategori`
 --
 ALTER TABLE `wisata_preference_kategori`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

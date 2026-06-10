@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use App\Models\Wisata;
 use App\Models\Kuliner;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ItineraryController extends Controller
 {
@@ -113,5 +114,19 @@ class ItineraryController extends Controller
         }
 
         return view('user.itinerary', compact('data'));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $data = json_decode($request->data, true);
+
+        $pdf = Pdf::loadView(
+            'user.pdf.itinerary',
+            compact('data')
+        );
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download('itinerary-sireci.pdf');
     }
 }
