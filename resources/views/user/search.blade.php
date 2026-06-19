@@ -97,7 +97,7 @@
                     </a>
 
                     <!-- Penilaian -->
-                    <div class="sort-dropdown position-relative">
+                    <div class="sort-dropdown">
 
                         <button type="button"
                             class="sort-btn multi dropdown-toggle
@@ -325,34 +325,26 @@
 <script>
 // dropdown toggle
 document.querySelectorAll('.sort-dropdown .dropdown-toggle').forEach(btn => {
-    btn.addEventListener('click', function(e){
+    btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
         const menu = this.nextElementSibling;
 
-        const rect = this.getBoundingClientRect();
-
-        // toggle close others
+        // tutup semua dropdown lain
         document.querySelectorAll('.dropdown-menu-custom').forEach(m => {
-            if(m !== menu) m.style.display = 'none';
+            if (m !== menu) m.classList.remove('show');
         });
 
-        if(menu.style.display === 'block'){
-            menu.style.display = 'none';
-            return;
-        }
-
-        menu.style.display = 'block';
-
-        menu.style.top = (rect.bottom + window.scrollY + 8) + 'px';
-        menu.style.left = rect.left + 'px';
+        // toggle current
+        menu.classList.toggle('show');
     });
 });
 
-document.addEventListener('click', function(){
+// klik luar → close semua
+document.addEventListener('click', function () {
     document.querySelectorAll('.dropdown-menu-custom').forEach(m => {
-        m.style.display = 'none';
+        m.classList.remove('show');
     });
 });
 
