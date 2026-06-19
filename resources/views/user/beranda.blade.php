@@ -44,7 +44,57 @@
                 <h4>Wisata</h4>
             </div>
 
-            <div class="row g-4" id="hasilWisata"></div>
+            <div class="row g-4" id="hasilWisata">
+                @foreach($wisata as $item)
+                    <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                        <div class="scroll-card h-100">
+                            <a href="{{ route('detail.wisata', $item->wisata_id) }}" class="card-link">
+                                <div class="card wisata-card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <img src="{{ $item->gambar_utama
+                                            ? asset('uploads/wisata/' . $item->gambar_utama)
+                                            : asset('asset/images/background.png') }}" class="card-img">
+
+                                        @if(isset($item->skor_rekomendasi) && $item->skor_rekomendasi > 0)
+                                            <span class="recommendation-badge position-absolute top-0 end-0 m-2">
+                                                <i class="bi bi-lightning-charge-fill me-1"></i>
+                                                {{ number_format($item->skor_rekomendasi * 100, 0) }}%
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <h6 class="title-card flex-grow-1 mb-0">
+                                                {{ $item->nama_tempat }}
+                                            </h6>
+
+                                            <span class="rating flex-shrink-0">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                {{ $item->rating ?? '-' }}
+                                            </span>
+                                        </div>
+
+                                        <small class="location d-block mt-2">
+                                            {{ $item->alamat ?? '-' }}
+                                        </small>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="price">
+                                                Rp {{ number_format($item->htm_min_domestik ?? $item->harga ?? 0, 0, ',', '.') }}/orang
+                                            </span>
+
+                                            <small class="category">
+                                                {{ $item->kategori->nama_kategori ?? $item->kategori ?? '-' }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
         </div>
 
@@ -55,15 +105,66 @@
                 <h4>Kuliner</h4>
             </div>
 
-            <div class="row g-4" id="hasilKuliner"></div>
+            <div class="row g-4" id="hasilKuliner">
+                @foreach($kuliner as $item)
+                    <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                        <div class="scroll-card h-100">
+                            <a href="{{ route('detail.kuliner', $item->kuliner_id) }}" class="card-link">
+                                <div class="card wisata-card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <img src="{{ $item->gambar_utama
+                                            ? asset('uploads/kuliner/' . $item->gambar_utama)
+                                            : asset('asset/images/background.png') }}" class="card-img">
+
+                                        @if(isset($item->skor_rekomendasi) && $item->skor_rekomendasi > 0)
+                                            <span class="recommendation-badge position-absolute top-0 end-0 m-2">
+                                                <i class="bi bi-lightning-charge-fill me-1"></i>
+                                                {{ number_format($item->skor_rekomendasi * 100, 0) }}%
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <h6 class="title-card flex-grow-1 mb-0">
+                                                {{ $item->nama_tempat }}
+                                            </h6>
+
+                                            <span class="rating flex-shrink-0">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                {{ $item->rating ?? '-' }}
+                                            </span>
+                                        </div>
+
+                                        <small class="location d-block mt-2">
+                                            {{ $item->alamat ?? '-' }}
+                                        </small>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="price">
+                                                Rp {{ number_format($item->htm_min ?? $item->harga ?? 0, 0, ',', '.') }}
+                                                - {{ number_format($item->htm_max ?? $item->harga ?? 0, 0, ',', '.') }}
+                                            </span>
+
+                                            <small class="category">
+                                                {{ $item->kategori->nama_kategori ?? $item->kategori ?? '-' }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
         </div>
 
     </div>
 
     <!-- WISATA -->
-    <div class="container mt-5" id="defaultWisata" style="{{ Auth::check() ? 'display:none;' : '' }}"">
-                                    <div class=" section-header">
+    <div class="container mt-5" id="defaultWisata" style="{{ Auth::check() ? 'display:none;' : '' }}">
+    <div class="section-header">
         <h3>Rekomendasi Wisata</h3>
         <a href="{{ route('wisata.index') }}" class="lihat-semua">
             Lihat Semua
@@ -137,8 +238,8 @@
     </div>
 
     <!-- KULINER -->
-    <div class="container mt-5" id="defaultKuliner" style="{{ Auth::check() ? 'display:none;' : '' }}"">
-                                    <div class=" section-header">
+    <div class="container mt-5" id="defaultKuliner" style="{{ Auth::check() ? 'display:none;' : '' }}">
+    <div class="section-header">
         <h3>Rekomendasi Kuliner</h3>
         <a href="{{ route('kuliner.index') }}" class="lihat-semua">
             Lihat Semua
@@ -416,20 +517,20 @@
             const wisata = JSON.parse(localStorage.getItem('hasil_wisata') || '[]');
             const kuliner = JSON.parse(localStorage.getItem('hasil_kuliner') || '[]');
 
-            // kalau ada data rekomendasi
-            if (wisata.length > 0 || kuliner.length > 0) {
-
-                // hide default section
-                document.getElementById('defaultWisata').style.display = 'none';
-                document.getElementById('defaultKuliner').style.display = 'none';
-
-                // tampilkan section hasil
-                document.getElementById('hasilRekomendasi').style.display = 'block';
-
-                // render ulang
-                tampilkanWisata(wisata);
-                tampilkanKuliner(kuliner);
+            if (wisata.length === 0 && kuliner.length === 0) {
+                return;
             }
+
+            // hide default section
+            document.getElementById('defaultWisata').style.display = 'none';
+            document.getElementById('defaultKuliner').style.display = 'none';
+
+            // tampilkan section hasil
+            document.getElementById('hasilRekomendasi').style.display = 'block';
+
+            // render ulang
+            tampilkanWisata(wisata);
+            tampilkanKuliner(kuliner);
         }
 
         // =========================
@@ -536,7 +637,7 @@
 
                             <div class="position-relative">
 
-                                <img src="/uploads/wisata/${item.gambar ?? 'background.png'}"
+                                <img src="${item.gambar ? `/uploads/wisata/${item.gambar}` : '/asset/images/background.png'}"
                                     class="card-img">
 
                                 ${item.skor_rekomendasi > 0 ? `
@@ -615,7 +716,7 @@
 
                             <div class="position-relative">
 
-                                <img src="/uploads/kuliner/${item.gambar ?? 'background.png'}"
+                                <img src="${item.gambar ? `/uploads/kuliner/${item.gambar}` : '/asset/images/background.png'}"
                                     class="card-img">
 
                                 ${item.skor_rekomendasi > 0 ? `
