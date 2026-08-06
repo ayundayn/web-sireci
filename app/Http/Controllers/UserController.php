@@ -160,7 +160,8 @@ class UserController extends Controller
                     'kategori' => (object) ['nama_kategori' => $item['kategori'] ?? '-'],
                     'rating' => $item['rating'],
                     'alamat' => $item['alamat'],
-                    'harga' => $item['htm_min'],
+                    'htm_min' => $item['htm_min'],
+                    'htm_max' => $item['htm_max'],
                     'skor_rekomendasi' => 0,
                     'gambar_utama' => Kuliner::find($item['kuliner_id'])
                             ?->gambar()

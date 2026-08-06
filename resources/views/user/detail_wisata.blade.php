@@ -50,13 +50,13 @@
 
                         <div class="gallery-item">
                             <img id="img1" src="{{ asset('uploads/wisata/' . $data->gambar[0]->gambar) }}"
-                                onclick="openGalleryModal()">
+                                onclick="openGalleryModal()" loading="lazy" decoding="async">
                         </div>
 
                         <div class="gallery-item">
                             <img id="img2"
                                 src="{{ asset('uploads/wisata/' . ($data->gambar[1]->gambar ?? $data->gambar[0]->gambar)) }} onclick="
-                                openGalleryModal()">
+                                openGalleryModal()" loading="lazy" decoding="async">
                         </div>
 
                         @if($data->gambar->count() > 2)
@@ -75,7 +75,7 @@
 
                 @else
 
-                    <img src="{{ asset('asset/images/background.png') }}" class="slider-image">
+                    <img src="{{ asset('asset/images/background.png') }}" class="slider-image" loading="lazy" decoding="async">
 
                 @endif
 
@@ -197,8 +197,11 @@
 
                 <div class="map-box">
                     @if($data->lokasi_geo)
-                        <iframe src="https://maps.google.com/maps?q={{ $data->lokasi_geo }}&output=embed" width="100%"
-                            height="300" style="border:0;">
+                        <iframe
+                            src="https://maps.google.com/maps?q={{ $data->lokasi_geo }}&output=embed"
+                            class="detail-map"
+                            style="border:0;"
+                            allowfullscreen>
                         </iframe>
                     @else
                         <p>Lokasi tidak tersedia</p>

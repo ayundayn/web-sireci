@@ -17,19 +17,28 @@
                     <h4 class="mb-0 fw-bold">Favorit Saya</h4>
                 </div>
 
-                <div class="action-buttons">
+                <div class="action-buttons d-flex align-items-center gap-3">
 
-                    <!-- PILIH SEMUA -->
                     <button id="btn-pilih-semua" class="btn btn-outline-main">
                         Pilih Semua
                     </button>
 
-                    <!-- BUAT ITINERARY -->
                     <a href="#" id="btn-itinerary" class="btn btn-main disabled">
                         Buat itinerary
                     </a>
 
                 </div>
+
+            </div>
+
+            <div id="itinerary-info" class="itinerary-alert mb-3">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    Pilih minimal <b>3 destinasi wisata</b> dan
+                    <b>3 tempat kuliner</b> untuk membuat itinerary.
+                </span>
 
             </div>
 
@@ -48,26 +57,26 @@
                                 $obj = $isWisata ? $item->wisata : $item->kuliner;
                             @endphp
 
-                            <div class="col-6 col-lg-12">
+                            <div class="col-12">
 
                                 <div class="card favorit-card mb-3 p-3 favorit-clickable"
                                     data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}" data-type="{{ $fav['type'] }}"
                                     onclick="window.location='{{ $detailRoute }}'">
 
-                                    <div class="row align-items-center g-3">
+                                    <div class="favorit-wrapper">
 
                                         <!-- GAMBAR -->
-                                        <div class="col-md-3 col-12">
-
+                                        <div class="favorit-image-wrapper">
                                             <img src="{{ asset(
-                                                ($isWisata ? 'uploads/wisata/' : 'uploads/kuliner/') .
-                                                (optional($obj->gambar->first())->gambar ?? 'background.png')
-                                            ) }}" class="img-fluid rounded favorit-img w-100">
-
+                        ($isWisata ? 'uploads/wisata/' : 'uploads/kuliner/') .
+                        (optional($obj->gambar->first())->gambar ?? 'background.png')
+                    ) }}" class="favorit-img" loading="lazy" decoding="async">
                                         </div>
 
+
                                         <!-- INFO -->
-                                        <div class="col-md-7 col-12">
+                                        <div class="favorit-info">
+
 
                                             <div class="d-flex align-items-center gap-2 flex-wrap">
 
@@ -76,27 +85,30 @@
                                                     {{ $obj->rating ?? '-' }}
                                                 </span>
 
-                                                <span>•</span>
+                                                @if($isWisata)
 
-                                                <span class="category">
-
-                                                    @if($isWisata)
+                                                    <span class="badge-wisata">
                                                         {{ $obj->kategori->nama_kategori ?? '-' }}
-                                                    @else
-                                                        Kuliner {{ $obj->kategori->nama_kategori ?? '-' }}
-                                                    @endif
+                                                    </span>
 
-                                                </span>
+                                                @else
+
+                                                    <span class="badge-kuliner">
+                                                        Kuliner {{ $obj->kategori->nama_kategori ?? '-' }}
+                                                    </span>
+
+                                                @endif
 
                                             </div>
 
-                                            <h5 class="mt-2">
+                                            <h5 class="favorit-title">
                                                 {{ $obj->nama_tempat }}
                                             </h5>
 
-                                            <p class="location mb-1">
+                                            <div class="location">
+                                                <i class="bi bi-geo-alt-fill"></i>
                                                 {{ $obj->alamat }}
-                                            </p>
+                                            </div>
 
                                             <span class="price">
 
@@ -116,17 +128,26 @@
                                         </div>
 
                                         <!-- TOMBOL -->
-                                        <div class="col-md-2 col-12">
+                                        <div class="favorit-action">
 
-                                            <button class="btn btn-outline-main mb-2 w-100 btn-pilih">
-                                                Pilih
-                                            </button>
+                                            <div class="card-action">
 
-                                            <button class="btn btn-danger w-100 btn-hapus"
-                                                data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}"
-                                                data-type="{{ $fav['type'] }}">
-                                                Hapus
-                                            </button>
+                                                <button class="btn btn-outline-main btn-pilih">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    <span>Pilih</span>
+                                                </button>
+
+
+                                                <button class="btn btn-hapus"
+                                                    data-id="{{ $isWisata ? $obj->wisata_id : $obj->kuliner_id }}"
+                                                    data-type="{{ $fav['type'] }}">
+
+                                                    <i class="bi bi-trash"></i>
+                                                    <span>Hapus</span>
+
+                                                </button>
+
+                                            </div>
 
                                         </div>
 
@@ -247,24 +268,66 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
 
             function updateButtonItinerary() {
 
-                const selected = document.querySelectorAll('.favorit-card.selected');
+                let wisataCount = 0;
+                let kulinerCount = 0;
+
+                document.querySelectorAll('.favorit-card.selected')
+                    .forEach(card => {
+
+                        if (card.dataset.type === 'wisata') {
+                            wisataCount++;
+                        } else {
+                            kulinerCount++;
+                        }
+
+                    });
+
 
                 const btn = document.getElementById('btn-itinerary');
+                const info = document.getElementById('itinerary-info');
 
-                if (selected.length > 0) {
+                if (wisataCount >= 3 && kulinerCount >= 3) {
 
                     btn.classList.remove('disabled');
+
+                    info.innerHTML = `
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>
+                                                        Pilihan sudah cukup. Kamu bisa membuat itinerary.
+                                                    </span>
+                                                `;
+
+                    info.classList.add('ready');
+
 
                 } else {
 
                     btn.classList.add('disabled');
+
+                    info.innerHTML = `
+                                                <i class="bi bi-info-circle-fill"></i>
+
+                                                <span>
+                                                    Pilih
+                                                    <b>${Math.max(0, 3 - wisataCount)} wisata</b>
+                                                    dan
+                                                    <b>${Math.max(0, 3 - kulinerCount)} kuliner</b>
+                                                    lagi untuk membuat itinerary.
+                                                </span>
+                                            `;
+
+                    info.classList.remove('ready');
+
                 }
+
             }
 
             document.querySelectorAll('.btn-pilih').forEach(btn => {
@@ -281,11 +344,18 @@
 
                     if (this.classList.contains('active')) {
 
-                        this.innerHTML = 'Dipilih';
+                        this.innerHTML = `
+                        <i class="bi bi-check-circle-fill"></i>
+                        Dipilih
+                    `;
 
                     } else {
 
-                        this.innerHTML = 'Pilih';
+                        this.innerHTML = `
+                        <i class="bi bi-check-circle"></i>
+                        Pilih
+                    `;
+
                     }
 
                     updateButtonItinerary();
@@ -383,6 +453,93 @@
 
                 });
 
+            function validateItinerarySelection() {
+
+                let wisataCount = 0;
+                let kulinerCount = 0;
+
+                document.querySelectorAll('.favorit-card.selected')
+                    .forEach(card => {
+
+                        const type = card.dataset.type;
+
+                        if (type === 'wisata') {
+                            wisataCount++;
+                        } else {
+                            kulinerCount++;
+                        }
+
+                    });
+
+
+                if (wisataCount < 3 || kulinerCount < 3) {
+
+                    let message = '';
+
+                    if (wisataCount < 3 && kulinerCount < 3) {
+
+                        message = `
+                                                                                                Pilih minimal <b>3 destinasi wisata</b>
+                                                                                                dan <b>3 tempat kuliner</b>
+                                                                                                untuk membuat itinerary.
+                                                                                                <br><br>
+                                                                                                Saat ini:
+                                                                                                <br>
+                                                                                                🏞️ Wisata: ${wisataCount}/3
+                                                                                                <br>
+                                                                                                🍽️ Kuliner: ${kulinerCount}/3
+                                                                                            `;
+
+                    } else if (wisataCount < 3) {
+
+                        message = `
+                                                                                                Pilih minimal <b>3 destinasi wisata</b>
+                                                                                                terlebih dahulu.
+                                                                                                <br><br>
+                                                                                                Saat ini:
+                                                                                                <br>
+                                                                                                🏞️ Wisata: ${wisataCount}/3
+                                                                                            `;
+
+                    } else {
+
+                        message = `
+                                                                                                Pilih minimal <b>3 tempat kuliner</b>
+                                                                                                terlebih dahulu.
+                                                                                                <br><br>
+                                                                                                Saat ini:
+                                                                                                <br>
+                                                                                                🍽️ Kuliner: ${kulinerCount}/3
+                                                                                            `;
+                    }
+
+
+                    Swal.fire({
+
+                        icon: 'info',
+
+                        title: 'Pilihan belum cukup',
+
+                        html: message,
+
+                        confirmButtonText: 'Pilih Lagi',
+
+                        confirmButtonColor: '#2f8f8b',
+
+                        customClass: {
+                            popup: 'rounded-4'
+                        }
+
+                    });
+
+
+                    return false;
+                }
+
+
+                return true;
+            }
+
             // MODAL
             const modalElement = document.getElementById('modalHari');
 
@@ -394,9 +551,16 @@
 
                     e.preventDefault();
 
+
                     if (this.classList.contains('disabled')) {
                         return;
                     }
+
+
+                    if (!validateItinerarySelection()) {
+                        return;
+                    }
+
 
                     modalHari.show();
 

@@ -24,9 +24,19 @@
                             <p class="filter-subtitle">Rentang Harga</p>
 
                             <div class="price-range">
-                                <input type="number" name="min_harga" value="{{ request('min_harga') }}" placeholder="MIN">
+                                <input type="number"
+                                    name="min_harga"
+                                    value="{{ request('min_harga') }}"
+                                    placeholder="MIN"
+                                    min="1"
+                                    step="1">
                                 <span class="divider">—</span>
-                                <input type="number" name="max_harga" value="{{ request('max_harga') }}" placeholder="MAX">
+                                <input type="number"
+                                    name="max_harga"
+                                    value="{{ request('max_harga') }}"
+                                    placeholder="MAX"
+                                    min="1"
+                                    step="1">
                             </div>
 
                             <hr>
@@ -79,169 +89,172 @@
 
                 <!-- SORTING -->
                 <div class="sorting-box mb-4">
-                    <span class="me-2">Urutkan</span>
+                    <span class="sort-label">Urutkan</span>
 
-                    @php
-                        $params = request()->all();
-                    @endphp
+                    <div class="sorting-scroll">
 
-                    <!-- Single -->
-                    <a href="{{ route('search', array_merge($params, ['sort'=>'terkait'])) }}"
-                       class="sort-btn single {{ request('sort')=='terkait' ? 'active' : '' }}">
-                        Terkait
-                    </a>
+                        @php
+                            $params = request()->all();
+                        @endphp
 
-                    <a href="{{ route('search', array_merge($params, ['sort'=>'terbaru'])) }}"
-                       class="sort-btn single {{ request('sort')=='terbaru' ? 'active' : '' }}">
-                        Terbaru
-                    </a>
+                        <!-- Single -->
+                        <a href="{{ route('search', array_merge($params, ['sort'=>'terkait'])) }}"
+                        class="sort-btn single {{ request('sort')=='terkait' ? 'active' : '' }}">
+                            Terkait
+                        </a>
 
-                    <!-- Penilaian -->
-                    <div class="sort-dropdown">
+                        <a href="{{ route('search', array_merge($params, ['sort'=>'terbaru'])) }}"
+                        class="sort-btn single {{ request('sort')=='terbaru' ? 'active' : '' }}">
+                            Terbaru
+                        </a>
 
-                        <button type="button"
-                            class="sort-btn multi dropdown-toggle
-                            {{ str_contains(request('sort'), 'rating') ? 'active' : '' }}">
-                            Penilaian
-                        </button>
+                        <!-- Penilaian -->
+                        <div class="sort-dropdown">
 
-                        <div class="dropdown-menu-custom">
+                            <button type="button"
+                                class="sort-btn multi dropdown-toggle
+                                {{ str_contains(request('sort'), 'rating') ? 'active' : '' }}">
+                                Penilaian
+                            </button>
 
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_desc'])) }}"
-                                class="dropdown-item
-                                {{ request('sort')=='rating_desc' ? 'active-dropdown' : '' }}">
+                            <div class="dropdown-menu-custom">
 
-                                Tertinggi
+                                <a href="{{ route('search', array_merge($params, ['sort'=>'rating_desc'])) }}"
+                                    class="dropdown-item
+                                    {{ request('sort')=='rating_desc' ? 'active-dropdown' : '' }}">
 
-                            </a>
+                                    Tertinggi
 
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'rating_asc'])) }}"
-                                class="dropdown-item
-                                {{ request('sort')=='rating_asc' ? 'active-dropdown' : '' }}">
+                                </a>
 
-                                Terendah
+                                <a href="{{ route('search', array_merge($params, ['sort'=>'rating_asc'])) }}"
+                                    class="dropdown-item
+                                    {{ request('sort')=='rating_asc' ? 'active-dropdown' : '' }}">
 
-                            </a>
+                                    Terendah
 
-                        </div>
+                                </a>
 
-                    </div>
-
-                    <!-- Harga -->
-                    <div class="sort-dropdown position-relative">
-
-                        <button type="button"
-                            class="sort-btn multi dropdown-toggle
-                            {{ str_contains(request('sort'), 'harga') ? 'active' : '' }}">
-                            Harga
-                        </button>
-
-                        <div class="dropdown-menu-custom">
-
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_desc'])) }}"
-                                class="dropdown-item
-                                {{ request('sort')=='harga_desc' ? 'active-dropdown' : '' }}">
-
-                                Tertinggi
-
-                            </a>
-
-                            <a href="{{ route('search', array_merge($params, ['sort'=>'harga_asc'])) }}"
-                                class="dropdown-item
-                                {{ request('sort')=='harga_asc' ? 'active-dropdown' : '' }}">
-
-                                Terendah
-
-                            </a>
+                            </div>
 
                         </div>
 
+                        <!-- Harga -->
+                        <div class="sort-dropdown position-relative">
+
+                            <button type="button"
+                                class="sort-btn multi dropdown-toggle
+                                {{ str_contains(request('sort'), 'harga') ? 'active' : '' }}">
+                                Harga
+                            </button>
+
+                            <div class="dropdown-menu-custom">
+
+                                <a href="{{ route('search', array_merge($params, ['sort'=>'harga_desc'])) }}"
+                                    class="dropdown-item
+                                    {{ request('sort')=='harga_desc' ? 'active-dropdown' : '' }}">
+
+                                    Tertinggi
+
+                                </a>
+
+                                <a href="{{ route('search', array_merge($params, ['sort'=>'harga_asc'])) }}"
+                                    class="dropdown-item
+                                    {{ request('sort')=='harga_asc' ? 'active-dropdown' : '' }}">
+
+                                    Terendah
+
+                                </a>
+
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
                 <!-- CARD -->
-                <div class="row">
+                <div class="row g-4">
 
                     @forelse($results as $item)
 
                         @php
-
                             $isWisata = $item->type === 'wisata';
 
                             $detailRoute = $isWisata
                                 ? route('detail.wisata', $item->wisata_id)
                                 : route('detail.kuliner', $item->kuliner_id);
 
+                            $gambar = optional($item->gambar?->first())->gambar;
                         @endphp
 
-                        <div class="col-12 col-md-6 col-xl-4 mb-4">
+                        <div class="col-6 col-md-4 mb-3">
 
-                            <div class="card wisata-card search-clickable"
-                                onclick="window.location='{{ $detailRoute }}'"
-                                style="cursor:pointer;">
+                            <div class="h-100">
 
-                                @php
-                                    $gambar = optional($item->gambar?->first())->gambar;
-                                @endphp
+                                <a href="{{ $detailRoute }}" class="card-link">
 
-                                <img src="{{ $gambar
-                                    ? asset('uploads/' . ($item->type == 'wisata' ? 'wisata' : 'kuliner') . '/' . $gambar)
-                                    : asset('asset/images/background.png')
-                                }}" class="card-img">
+                                    <div class="card wisata-card h-100 border-0 shadow-sm">
 
-                                <div class="card-body">
+                                        <div class="position-relative">
 
-                                    <div class="d-flex justify-content-between">
+                                            <img
+                                                src="{{ $gambar
+                                                    ? asset('uploads/' . ($isWisata ? 'wisata' : 'kuliner') . '/' . $gambar)
+                                                    : asset('asset/images/background.png') }}"
+                                                class="card-img" loading="lazy" decoding="async">
 
-                                        <h6 class="title-card">
-                                            {{ $item->nama_tempat }}
-                                        </h6>
+                                        </div>
 
-                                        <span class="rating">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            {{ $item->rating ?? '-' }}
-                                        </span>
+                                        <div class="card-body">
+
+                                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+
+                                                <h6 class="title-card flex-grow-1 mb-0">
+                                                    {{ $item->nama_tempat }}
+                                                </h6>
+
+                                                <span class="rating flex-shrink-0">
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                    {{ $item->rating ?? '-' }}
+                                                </span>
+
+                                            </div>
+
+                                            <small class="location d-block mb-2">
+                                                {{ $item->alamat ?? '-' }}
+                                            </small>
+
+                                            <div class="d-flex justify-content-between align-items-center mt-2">
+
+                                                <span class="price">
+
+                                                    @if($isWisata)
+                                                        Rp {{ number_format($item->htm_min_domestik ?? 0,0,',','.') }}/orang
+                                                    @else
+                                                        Rp {{ number_format($item->htm_min ?? 0,0,',','.') }}
+                                                        -
+                                                        {{ number_format($item->htm_max ?? 0,0,',','.') }}
+                                                    @endif
+
+                                                </span>
+
+                                                <small class="{{ $isWisata ? 'badge-wisata' : 'badge-kuliner' }}">
+
+                                                    @if($isWisata)
+                                                        {{ $item->kategori->nama_kategori ?? '-' }}
+                                                    @else
+                                                        {{ $item->kategori->nama_kategori ?? '-' }}
+                                                    @endif
+
+                                                </small>
+
+                                            </div>
+
+                                        </div>
 
                                     </div>
 
-                                    <small class="location">
-                                        {{ $item->alamat }}
-                                    </small>
-
-                                    <div class="d-flex justify-content-between mt-2">
-
-                                        <span class="price">
-
-                                            @if($isWisata)
-
-                                                Rp {{ number_format($item->htm_min_domestik ?? 0, 0, ',', '.') }}/orang
-
-                                            @else
-
-                                                Rp {{ number_format($item->htm_min ?? 0, 0, ',', '.') }}
-                                                - {{ number_format($item->htm_max ?? 0, 0, ',', '.') }}
-
-                                            @endif
-
-                                        </span>
-
-                                        <small class="category">
-
-                                            @if($isWisata)
-
-                                                {{ $item->kategori->nama_kategori ?? '-' }}
-
-                                            @else
-
-                                                Kuliner {{ $item->kategori->nama_kategori ?? '-' }}
-
-                                            @endif
-
-                                        </small>
-
-                                    </div>
-
-                                </div>
+                                </a>
 
                             </div>
 
@@ -249,7 +262,9 @@
 
                     @empty
 
-                        <p>Tidak ada hasil ditemukan</p>
+                        <div class="col-12">
+                            <p>Tidak ada hasil ditemukan.</p>
+                        </div>
 
                     @endforelse
 
@@ -284,9 +299,19 @@
                     <p class="filter-subtitle">Rentang Harga</p>
 
                     <div class="price-range">
-                        <input type="number" name="min_harga" value="{{ request('min_harga') }}" placeholder="MIN">
+                        <input type="number"
+                            name="min_harga"
+                            value="{{ request('min_harga') }}"
+                            placeholder="MIN"
+                            min="1"
+                            step="1">
                         <span>—</span>
-                        <input type="number" name="max_harga" value="{{ request('max_harga') }}" placeholder="MAX">
+                        <input type="number"
+                            name="max_harga"
+                            value="{{ request('max_harga') }}"
+                            placeholder="MAX"
+                            min="1"
+                            step="1">
                     </div>
 
                     <hr>
@@ -323,57 +348,157 @@
 </div>
 
 <script>
-// dropdown toggle
-document.querySelectorAll('.sort-dropdown .dropdown-toggle').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+    let activeButton = null;
+    let activeMenu = null;
 
-        const menu = this.nextElementSibling;
+    // dropdown toggle
+    const dropdowns = document.querySelectorAll('.sort-dropdown');
 
-        // tutup semua dropdown lain
-        document.querySelectorAll('.dropdown-menu-custom').forEach(m => {
-            if (m !== menu) m.classList.remove('show');
+    dropdowns.forEach(dropdown => {
+
+        const button = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu-custom');
+
+        document.body.appendChild(menu);
+
+        button.addEventListener('click', function(e){
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // tutup dropdown lain
+            document.querySelectorAll('.dropdown-menu-custom').forEach(item=>{
+                if(item !== menu){
+                    item.classList.remove('show');
+                }
+            });
+
+            const rect = button.getBoundingClientRect();
+
+            // tampilkan sebentar supaya bisa dihitung lebarnya
+            menu.style.visibility = "hidden";
+            menu.style.display = "block";
+
+            const menuWidth = menu.offsetWidth;
+            const screenWidth = window.innerWidth;
+
+            let left = rect.left + window.scrollX;
+
+            // kalau melebihi layar kanan
+            if (left + menuWidth > screenWidth + window.scrollX - 10) {
+                left = screenWidth + window.scrollX - menuWidth - 10;
+            }
+
+            // kalau terlalu kiri
+            if (left < 10) {
+                left = 10;
+            }
+
+            menu.style.left = left + "px";
+            menu.style.top = (rect.bottom + window.scrollY + 8) + "px";
+
+            menu.style.visibility = "";
+            menu.style.display = "";
+
+            menu.classList.toggle("show");
+
+            if(menu.classList.contains("show")){
+                activeButton = button;
+                activeMenu = menu;
+
+                updateDropdownPosition();
+            }else{
+                activeButton = null;
+                activeMenu = null;
+            }
         });
 
-        // toggle current
-        menu.classList.toggle('show');
     });
-});
 
-// klik luar → close semua
-document.addEventListener('click', function () {
-    document.querySelectorAll('.dropdown-menu-custom').forEach(m => {
-        m.classList.remove('show');
-    });
-});
+    function updateDropdownPosition() {
 
-function openFilter(){
-    document.getElementById('filterModal').style.display = 'block';
-}
+        if (!activeButton || !activeMenu) return;
 
-function closeFilter(){
-    const modal = document.getElementById('filterModal');
-    const sheet = document.querySelector('.filter-sheet');
+        const rect = activeButton.getBoundingClientRect();
 
-    // trigger animasi turun
-    sheet.classList.add('closing');
+        const menuWidth = activeMenu.offsetWidth;
 
-    setTimeout(() => {
-        modal.style.display = 'none';
-        sheet.classList.remove('closing');
-    }, 250); // sama dengan durasi animasi
-}
+        let left = rect.left;
+        let top = rect.bottom + 8;
 
-// klik luar sheet
-document.addEventListener('click', function(e){
-    let modal = document.getElementById('filterModal');
-    let sheet = document.querySelector('.filter-sheet');
+        if (left + menuWidth > window.innerWidth - 10) {
+            left = window.innerWidth - menuWidth - 10;
+        }
 
-    if(e.target === modal){
-        closeFilter();
+        if (left < 10) {
+            left = 10;
+        }
+
+        activeMenu.style.left = left + "px";
+        activeMenu.style.top = top + "px";
     }
-});
+
+    window.addEventListener("scroll", updateDropdownPosition, { passive:true });
+    window.addEventListener("resize", updateDropdownPosition);
+
+    document.querySelector(".sorting-scroll")
+    ?.addEventListener("scroll", updateDropdownPosition, { passive:true });
+
+    // klik luar
+    document.addEventListener("click", function () {
+
+        document.querySelectorAll(".dropdown-menu-custom").forEach(menu => {
+            menu.classList.remove("show");
+        });
+
+        activeButton = null;
+        activeMenu = null;
+
+    });
+
+    function openFilter(){
+        document.getElementById('filterModal').style.display = 'block';
+    }
+
+    function closeFilter(){
+        const modal = document.getElementById('filterModal');
+        const sheet = document.querySelector('.filter-sheet');
+
+        // trigger animasi turun
+        sheet.classList.add('closing');
+
+        setTimeout(() => {
+            modal.style.display = 'none';
+            sheet.classList.remove('closing');
+        }, 250); // sama dengan durasi animasi
+    }
+
+    // klik luar sheet
+    document.addEventListener('click', function(e){
+        let modal = document.getElementById('filterModal');
+        let sheet = document.querySelector('.filter-sheet');
+
+        if(e.target === modal){
+            closeFilter();
+        }
+    });
+
+    document.querySelectorAll('input[name="min_harga"], input[name="max_harga"]').forEach(input => {
+        // Tidak boleh mengetik minus, e, +, titik
+        input.addEventListener('keydown', function(e){
+            if (['-','+','e','E','.'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        // Jika isi <= 0, kosongkan
+        input.addEventListener('input', function(){
+            if (this.value !== '' && Number(this.value) <= 0) {
+                this.value = '';
+            }
+        });
+
+    });
 </script>
 @endsection
 

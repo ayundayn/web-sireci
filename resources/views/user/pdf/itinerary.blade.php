@@ -117,6 +117,21 @@
             color: #b26a00;
         }
 
+        .maps {
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        .maps a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        .maps-label {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
         .footer {
             margin-top: 30px;
             text-align: center;
@@ -215,6 +230,14 @@
                                     {{ $item['kategori'] ?? '-' }}
                                 </span>
 
+                            @endif
+
+                            @if(!empty($item['lokasi_geo']))
+                                <div class="maps">
+                                    <a href="https://www.google.com/maps?q={{ urlencode($item['lokasi_geo']) }}">
+                                        Lihat di Google Maps
+                                    </a>
+                                </div>
                             @endif
 
                         </td>

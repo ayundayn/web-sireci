@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     @vite(['resources/css/style.css', 'resources/js/app.js'])
 
     <style>
@@ -32,13 +34,6 @@
             font-weight: 700;
             color: #2f8f8b;
             font-size: 24px;
-        }
-
-        .search-box {
-            border-radius: 25px;
-            background: #eef3f4;
-            border: none;
-            padding: 10px 20px;
         }
 
         .hero {
@@ -91,6 +86,7 @@
 
             <div class="logo">
                 <a href="{{ url('/') }}">
+                    <img src="{{ asset('asset/images/Logo Sireci.png') }}" alt="Logo SIRECI">
                     <span class="brand-main">SI</span><span class="brand-sub">RECI</span>
                 </a>
             </div>
@@ -99,11 +95,22 @@
                 <form action="{{ route('search') }}" method="GET" id="searchForm">
                     <div class="search-wrapper">
 
-                        <input type="text" name="q" class="search-input" id="searchInput" placeholder="Cari..."
-                            value="{{ request('q') }}">
+                        <i class="bi bi-search search-prefix"></i>
 
-                        <button type="button" id="searchBtn" class="search-icon">
-                            <i class="bi bi-search"></i>
+                        <input
+                            type="text"
+                            name="q"
+                            class="search-input"
+                            id="searchInput"
+                            placeholder="Cari destinasi atau kuliner..."
+                            value="{{ request('q') }}"
+                        >
+
+                        <button
+                            type="button"
+                            id="searchBtn"
+                            class="search-icon">
+                            <i class="bi bi-x-lg"></i>
                         </button>
 
                     </div>
@@ -281,12 +288,19 @@
         const btn = document.getElementById('searchBtn');
         const form = document.getElementById('searchForm');
 
-        function updateIcon() {
-            if (input.value.trim().length > 0) {
-                btn.innerHTML = '<i class="bi bi-x-lg"></i>';
-            } else {
-                btn.innerHTML = '<i class="bi bi-search"></i>';
+        function updateIcon(){
+
+            if(input.value.trim() !== ""){
+
+                btn.style.visibility="visible";
+                btn.innerHTML='<i class="bi bi-x-lg"></i>';
+
+            }else{
+
+                btn.style.visibility="hidden";
+
             }
+
         }
 
         // klik icon

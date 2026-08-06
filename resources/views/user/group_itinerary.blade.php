@@ -6,58 +6,13 @@
 
         <div class="d-flex align-items-center gap-3 mb-5">
 
-            <a href="{{ route('favorit') }}" class="btn btn-light rounded-circle shadow-sm">
+            <a href="{{ route('beranda') }}" class="btn btn-light rounded-circle shadow-sm">
                 ←
             </a>
 
             <h1 class="fw-bold text-main mb-0">
-                Itinerary
+                Itinerary Rombongan
             </h1>
-
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
-
-            <div class="budget-card mb-0 flex-grow-1">
-
-                <div class="d-flex align-items-center gap-3">
-
-                    <div class="budget-icon">
-                        <i class="bi bi-wallet2"></i>
-                    </div>
-
-                    <div>
-                        <small class="d-block">
-                            Estimasi Total Budget
-                        </small>
-
-                        <small>
-                            Untuk {{ count($data['itinerary']) }} hari perjalanan
-                        </small>
-                    </div>
-
-                </div>
-
-                <div class="budget-total">
-                    Rp{{ number_format($data['total_budget'], 0, ',', '.') }}
-                </div>
-
-            </div>
-
-            <div class="budget-action">
-
-                <form action="{{ route('itinerary.pdf') }}" method="POST">
-                    @csrf
-
-                    <input type="hidden" name="data" value="{{ json_encode($data) }}">
-
-                    <button type="submit" class="pdf-card">
-                        <i class="bi bi-file-earmark-pdf"></i>
-                        <span>Export PDF</span>
-                    </button>
-                </form>
-
-            </div>
 
         </div>
 
@@ -86,6 +41,7 @@
                             <div class="timeline-card d-flex justify-content-between align-items-center">
 
                                 <div>
+
                                     <h5 class="mb-1">
                                         {{ $item['name'] }}
                                     </h5>
@@ -98,28 +54,38 @@
                                     <div class="d-flex align-items-center gap-2 flex-wrap mt-2">
 
                                         @if(($item['type'] ?? '') === 'kuliner')
+
                                             <span class="badge" style="background:#fff3cd;color:#b26a00;">
-                                                Kuliner {{ $item['kategori'] ?? '-' }}
+                                                Kuliner
+                                                {{ $item['kategori'] ?? '-' }}
                                             </span>
+
                                         @else
+
                                             <span class="badge" style="background:#d1e7dd;color:#146c43;">
                                                 {{ $item['kategori'] ?? '-' }}
                                             </span>
+
                                         @endif
 
                                         @if(!empty($item['lokasi_geo']))
+
                                             <a href="https://www.google.com/maps?q={{ urlencode($item['lokasi_geo']) }}" target="_blank"
                                                 class="maps-chip">
+
                                                 <i class="bi bi-map-fill me-1"></i>
                                                 Google Maps
+
                                             </a>
+
                                         @endif
 
                                     </div>
+
                                 </div>
 
                                 <img src="{{ !empty($item['gambar'])
-                        ? asset('uploads/' . ($item['type'] === 'wisata' ? 'wisata/' : 'kuliner/') . $item['gambar'])
+                        ? asset('uploads/' . ($item['type'] == 'wisata' ? 'wisata/' : 'kuliner/') . $item['gambar'])
                         : asset('asset/images/background.png') }}" class="rounded"
                                     style="width:100px;height:80px;object-fit:cover;" loading="lazy" decoding="async">
 
@@ -135,67 +101,16 @@
 
         @endforeach
 
+        {{-- CTA MITRA BPW --}}
+        <a href="{{ route('bpw.index') }}" class="btn btn-main shadow-lg floating-uAT-btn">
+
+            <i class="bi bi-whatsapp"></i>
+            Hubungi Mitra
+
+        </a>
+
     </div>
-
-    @php
-        session(['uat_redirect' => request()->fullUrl()]);
-    @endphp
-
-    <!-- FLOATING BUTTON -->
-    <a href="{{ route('uat.index') }}" class="btn btn-main shadow-lg floating-uAT-btn">
-
-        <i class="bi bi-clipboard-check"></i>
-        Beri Penilaian
-
-    </a>
-
-    @if(session('success_uat'))
-
-        <div id="uat-success-popup" class="uat-popup">
-
-            <div class="uat-popup-content">
-
-                <h5 class="fw-bold mb-2">
-                    Terima Kasih!
-                </h5>
-
-                <p class="mb-0 text-muted">
-
-                    Terima kasih sudah memberikan penilaian terhadap SIRECI.
-                    Masukan Anda sangat membantu kami dalam meningkatkan kualitas sistem dan pengalaman pengguna.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    @endif
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <script>
-
-        setTimeout(() => {
-
-            const popup = document.getElementById(
-                'uat-success-popup'
-            );
-
-            if (popup) {
-
-                popup.style.transition = '0.3s';
-
-                popup.style.opacity = '0';
-
-                setTimeout(() => {
-
-                    popup.remove();
-
-                }, 300);
-            }
-
-        }, 3000);
-
-    </script>
 @endsection

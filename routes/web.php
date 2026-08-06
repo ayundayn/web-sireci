@@ -17,6 +17,7 @@ use App\Http\Controllers\WisataController as UserWisataController;
 use App\Http\Controllers\KulinerController as UserKulinerController;
 use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\UatController;
+use App\Http\Controllers\BpwController;
 
 Route::get('auth/google', [GoogleController::class, 'redirect']);
 Route::get('auth/google/callback', [GoogleController::class, 'callback']);
@@ -58,6 +59,21 @@ Route::post(
     '/generate-itenary',
     [ItineraryController::class, 'generate']
 );
+
+Route::post(
+    '/group-itinerary',
+    [ItineraryController::class, 'group']
+)->name('group.itinerary');
+
+Route::get(
+    '/group-itinerary',
+    [ItineraryController::class,'showGroup']
+)->name('group.itinerary.show');
+
+Route::get(
+    '/mitra-bpw',
+    [BpwController::class,'index']
+)->name('bpw.index');
 
 Route::get(
     '/itinerary-page',
