@@ -1210,6 +1210,15 @@ body {
     width: 100%;
 }
 
+.btn-reset:hover {
+    background-color: #f0f8f7;
+}
+
+.btn-apply:hover {
+    background-color: #2c6e6f;
+    color: white;
+}
+
 /* Responsive Mobile */
 @media (max-width: 768px) {
     .sticky-filter{
@@ -1943,6 +1952,11 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+.btn-main:hover {
+    background-color: #2c6e6f;
+    color: white;
 }
 
 .back-btn:hover {
